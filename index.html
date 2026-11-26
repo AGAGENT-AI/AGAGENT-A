@@ -154,7 +154,7 @@ logs.innerHTML=message+"<br>"+logs.innerHTML;
 
 <script src="manager.js"></script>
  <script src="video.js"></script>
-
+<script src="editing.js"></script>
 <script>
 function sendManagerTask() {
     const input = document.getElementById("managerTask");
@@ -174,7 +174,18 @@ function sendManagerTask() {
         output += plan.deliverables.join("\n");
     }
 
-    result.textContent = output;
+   if (response.assignedAgent === "Video Editing Agent") {
+    const plan = VideoEditingAgent.createEditingPlan(input.value);
+
+    if (plan.success) {
+        output += "\n\nMONTAJ PLANI:\n";
+        output += plan.editingSteps.join("\n");
+        output += "\n\nİXRAC PARAMETRLƏRİ:\n";
+        output += "Format: " + plan.exportSettings.format + "\n";
+        output += "Keyfiyyət: " + plan.exportSettings.resolution + "\n";
+        output += "FPS: " + plan.exportSettings.frameRate;
+    }
+     } result.textContent = output;
 } else {
     result.textContent = response.message;
     }
