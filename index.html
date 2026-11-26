@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="az">
 <head>
@@ -6,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AGAGENT AI | Control Center</title>
 <style>
+:root{color-scheme:dark}
 *{box-sizing:border-box}
 body{margin:0;background:#080d18;color:#edf2ff;font-family:Arial,sans-serif}
 header{padding:22px;background:#111a2b;border-bottom:1px solid #26344d}
@@ -13,31 +13,35 @@ header h1{margin:0;color:#55b8ff}
 header p{color:#91a4c2;margin-bottom:0}
 main{padding:20px;max-width:1100px;margin:auto}
 h2{margin-top:28px}
-.stats,.agents{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px}
+.stats,.agents{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:12px}
 .card{background:#131e31;border:1px solid #263b59;border-radius:12px;padding:18px;margin-bottom:12px}
 .number{font-size:28px;font-weight:bold;color:#55b8ff}
-button{background:#1689df;color:white;border:0;padding:12px 17px;border-radius:8px;font-weight:bold;cursor:pointer;margin:4px 0}
+button{background:#1689df;color:white;border:0;padding:12px 17px;border-radius:8px;font-weight:bold;cursor:pointer;margin:4px 4px 4px 0}
 button:hover{background:#0871bd}
+button.secondary{background:#33445f}
+button.run{background:#16a085;width:100%;margin-top:8px}
 .status{color:#65e6a0;font-size:13px}
 .log{color:#9eb0ca;font-size:14px}
-input{width:100%;padding:12px;margin-bottom:10px;border-radius:8px}
-#managerResult{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.6}
+input,select{width:100%;padding:13px;margin:7px 0 12px;border-radius:8px;border:1px solid #344967;background:#0b1424;color:#edf2ff}
+label{display:block;color:#b8c8df;font-size:14px}
+#managerResult{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.65;color:#dce8fa}
+.small{color:#91a4c2;font-size:13px;line-height:1.5}
+.pill{display:inline-block;padding:4px 9px;border-radius:20px;background:#173b35;color:#77e5b2;font-size:12px}
 footer{text-align:center;padding:30px;color:#7586a2}
 </style>
 </head>
 <body>
 <header>
 <h1>⚡ AGAGENT AI</h1>
-<p>Professional AI Agent Control Center</p>
+<p>Professional AI Agent Control Center · G1.6</p>
 </header>
-
 <main>
 <h2>📊 System Overview</h2>
 <div class="stats">
 <div class="card"><div class="number">5</div>AI Agents</div>
 <div class="card"><div class="number" id="active">0</div>Active Agents</div>
-<div class="card"><div class="number">G1</div>Project Phase</div>
-<div class="card"><div class="number">v1.0</div>Dashboard</div>
+<div class="card"><div class="number">G1.6</div>Project Phase</div>
+<div class="card"><div class="number">v1.6</div>Dashboard</div>
 </div>
 
 <h2>🤖 AI Agent Management</h2>
@@ -45,144 +49,205 @@ footer{text-align:center;padding:30px;color:#7586a2}
 
 <h2>🎬 Production Center</h2>
 <div class="card">
-<h3>Video Production</h3>
-<p>Video creation workflow</p>
-<button onclick="notify('Video Production module selected')">Open Module</button>
-</div>
-
-<div class="card">
-<h3>✍️ Content Creation</h3>
-<p>Content planning and creation</p>
-<button onclick="notify('Content Creation module selected')">Open Module</button>
-</div>
-
-<h2>📋 Activity Log</h2>
-<div class="card log" id="logs">System initialized successfully.</div>
-
-<div class="card">
-<h2>AGAGENT AI – Manager</h2>
-<input id="managerTask" type="text" placeholder="Tapşırığını yaz...">
+<p>Bir mövzu daxil et. Manager tapşırığı uyğun agentə yönləndirə və ya bütün istehsal planını birlikdə hazırlaya bilər.</p>
+<label for="managerTask">Video mövzusu / tapşırıq</label>
+<input id="managerTask" type="text" placeholder="Məsələn: Süni intellektin gələcəyi">
+<label for="platform">Platforma</label>
+<select id="platform">
+<option>YouTube</option>
+<option>YouTube Shorts</option>
+<option>TikTok</option>
+<option>Instagram Reels</option>
+</select>
 <button onclick="sendManagerTask()">Tapşırığı göndər</button>
-<button onclick="runFullWorkflow()" style="width:100%;background:#16a085">
-🚀 TAM İSTEHSAL (FULL WORKFLOW)
-</button>
-<p id="managerResult"></p>
+<button class="run" onclick="runFullWorkflow()">🚀 TAM İSTEHSAL — FULL WORKFLOW</button>
+<p class="small">Qeyd: G1.6 prototipində agentlər strukturlaşdırılmış plan və mətn şablonları yaradır. Real AI araşdırması, avtomatik video montajı və MP4 ixracı hələ qoşulmayıb.</p>
 </div>
-</main>
 
-<footer>AGAGENT AI © 2026 | Control Center</footer>
+<h2>📋 İstehsal nəticəsi</h2>
+<div class="card" id="managerResult">Nəticələr burada görünəcək.</div>
+
+<h2>📜 Activity Log</h2>
+<div class="card log" id="logs">System initialized successfully.</div>
+</main>
+<footer>AGAGENT AI © 2026 | G1.6 Control Center</footer>
 
 <script>
-const names=[
-"Manager Agent",
-"Video Production Agent",
-"Video Editing Agent",
-"Content Creation Agent",
-"Automation Agent"
-];
+"use strict";
 
-const agents=document.getElementById("agents");
-const states={};
+const AgentRegistry = {
+  ManagerAgent: {
+    name:"AGAGENT Manager", version:"4.0",
+    agents:{
+      video:"Video Production Agent",
+      editing:"Video Editing Agent",
+      content:"Content Creation Agent",
+      automation:"Automation Agent"
+    },
+    processTask(task){
+      if(!task || !task.trim()) return {success:false,message:"Zəhmət olmasa tapşırıq yaz."};
+      const text=task.toLowerCase()
+        .replace(/ı/g,"i").replace(/ə/g,"e").replace(/ş/g,"s")
+        .replace(/ç/g,"c").replace(/ğ/g,"g").replace(/ö/g,"o").replace(/ü/g,"u");
+      let key="content";
+      if(/montaj|redakte|edit/.test(text)) key="editing";
+      else if(/avtomat|tekrarla/.test(text)) key="automation";
+      else if(/video|film|rolik|ssenari|senari/.test(text)) key="video";
+      else if(/basliq|tesvir|hashtag|paylasim|kontent|caption|description/.test(text)) key="content";
+      return {success:true,task,assignedAgent:this.agents[key],status:"assigned"};
+    }
+  },
 
-names.forEach((name,i)=>{
-states[i]=false;
-const card=document.createElement("div");
-card.className="card";
-card.innerHTML=`
-<h3>🤖 ${name}</h3>
-<p class="status" id="status${i}">● Offline</p>
-<button id="btn${i}">Activate Agent</button>`;
-agents.appendChild(card);
+  VideoProductionAgent:{
+    name:"AGAGENT Video Production Agent",version:"3.0",
+    createPlan(topic,platform="YouTube"){
+      if(!topic || !topic.trim()) return {success:false,message:"Video mövzusu daxil edilməyib."};
+      const t=topic.trim();
+      const scenes=[
+        {scene:1,title:"Güclü giriş",duration:"0:00–0:30",visual:"Mövzuya uyğun diqqətçəkən görüntülər, dinamik kadrlar və ekranda iri başlıq.",narration:`Heç düşünmüsünüzmü, ${t} gələcəyimizi necə dəyişə bilər? Bu videoda mövzunun ən vacib məqamlarını birlikdə araşdıracağıq.`,screenText:t},
+        {scene:2,title:"Mövzunun təqdimatı",duration:"0:30–1:30",visual:"Mövzunu izah edən ümumi görüntülər, sadə animasiyalar və anlayışları göstərən qrafiklər.",narration:`Əvvəlcə ${t} nə deməkdir və niyə bu qədər vacibdir suallarına aydınlıq gətirək. Mövzunun əsas anlayışlarına nəzər salaq.`,screenText:"Mövzunu tanıyaq"},
+        {scene:3,title:"Əsas məlumatlar",duration:"1:30–3:30",visual:"Əsas məqamları göstərən qrafiklər, mətn kartları, müqayisələr və izahlı kadrlar.",narration:`İndi ${t} haqqında əsas məqamları nəzərdən keçirək. Bu hissədə vacib xüsusiyyətləri, mümkün üstünlükləri və diqqət edilməli tərəfləri izah edəcəyik.`,screenText:"Əsas məlumatlar"},
+        {scene:4,title:"Praktiki nümunələr",duration:"3:30–4:30",visual:"Gündəlik həyatdan nümunələr, addım-addım nümayiş və mövzuya uyğun B-roll kadrlar.",narration:`Mövzunu daha yaxşı anlamaq üçün onun gündəlik həyatda necə qarşımıza çıxdığını nümunələrlə təsəvvür edək.`,screenText:"Real nümunələr"},
+        {scene:5,title:"Yekun və çağırış",duration:"4:30–5:00",visual:"Əsas fikirlərin qısa xülasəsi, kanal loqosu və abunə ol çağırışı.",narration:`Beləliklə, ${t} haqqında əsas məqamları nəzərdən keçirdik. Video faydalı oldusa, kanalımıza abunə olmağı və fikirlərinizi şərhlərdə bölüşməyi unutmayın!`,screenText:"Abunə ol!"}
+      ];
+      return {
+        success:true,agent:this.name,version:this.version,topic:t,platform,
+        title:`${t} — Bilməli olduğunuz hər şey!`,
+        structure:["Güclü giriş və diqqətçəkən başlıq","Mövzunun ətraflı təqdimatı","Əsas məlumatlar və maraqlı faktlar","Nümunələr və praktiki izahlar","Nəticə və izləyiciyə çağırış"],
+        scenes,
+        script:scenes.map(s=>s.title.toUpperCase()+": "+s.narration),
+        narration:scenes.map(s=>s.narration),
+        deliverables:["Tam video ssenarisi","Səhnə-səhnə istehsal planı","Vizual kadr təsvirləri","Diktor mətni","Altyazı üçün mətn","Video başlığı"],
+        status:"production_plan_created"
+      };
+    }
+  },
 
-document.getElementById("btn"+i).onclick=()=>{
-states[i]=!states[i];
-document.getElementById("status"+i).textContent=states[i]?"● Active":"● Offline";
-document.getElementById("btn"+i).textContent=states[i]?"Deactivate Agent":"Activate Agent";
-document.getElementById("active").textContent=Object.values(states).filter(Boolean).length;
-notify(name+(states[i]?" activated":" deactivated"));
+  VideoEditingAgent:{
+    name:"AGAGENT Video Editing Agent",version:"2.0",
+    createEditingPlan(topic,platform="YouTube"){
+      if(!topic || !topic.trim()) return {success:false,message:"Video mövzusu daxil edilməyib."};
+      const short=/short|tiktok|reels/i.test(platform);
+      return {
+        success:true,topic,platform,
+        editingSteps:["Lazımsız və uzun pauzaları kəs","Kadrları ssenariyə uyğun ardıcıllıqla yerləşdir","Mövzuya uyğun, istifadəsinə icazə olan musiqi və səs effektləri əlavə et","Diktor səsini təmizlə və səs səviyyələrini balanslaşdır","Azərbaycan dilində altyazıları sinxronlaşdır","Vacib məqamlara başlıq, qrafika və keçidlər əlavə et","Son baxış və keyfiyyət yoxlaması apar",short?"9:16 formatında ixrac et":"16:9 formatında ixrac et"],
+        exportSettings:{format:"MP4",resolution:short?"1080x1920":"1920x1080",frameRate:"30 FPS"},
+        status:"editing_plan_created"
+      };
+    }
+  },
+
+  ContentCreationAgent:{
+    name:"AGAGENT Content Creation Agent",version:"2.0",
+    createContent(topic,platform="YouTube"){
+      if(!topic || !topic.trim()) return {success:false,message:"Mövzu daxil edilməyib."};
+      const t=topic.trim();
+      const tags=["#AGAGENTAI","#AI","#ContentCreation","#DigitalContent",platform==="YouTube"?"#YouTube":"#ShortVideo"];
+      return {
+        success:true,topic:t,platform,
+        title:`${t} — Bilməli olduğunuz hər şey!`,
+        description:`${t} haqqında əsas məqamları, nümunələri və faydalı izahları bu videoda təqdim edirik. Videonu bəyənməyi, fikirlərinizi şərhlərdə yazmağı və yeni videolar üçün kanala abunə olmağı unutmayın.`,
+        caption:`${t}: gələcəyi anlamaq üçün vacib məqamlar!`,
+        hashtags:tags,
+        status:"content_created"
+      };
+    }
+  },
+
+  AutomationAgent:{
+    name:"AGAGENT Automation Agent",version:"2.0",
+    createAutomationPlan(task){
+      if(!task || !task.trim()) return {success:false,message:"Avtomatlaşdırma tapşırığı daxil edilməyib."};
+      return {
+        success:true,task:task.trim(),
+        steps:["Tapşırığın məqsədini və gözlənilən nəticəni müəyyən et","Təkrarlanan əməliyyatları müəyyənləşdir","İcra ardıcıllığını və məsul agentləri təyin et","Giriş məlumatlarını və yoxlama şərtlərini müəyyənləşdir","Nəticəni yoxla, səhvləri qeyd et və prosesi optimallaşdır"],
+        result:"Avtomatlaşdırma planı hazırlandı. Bu prototip addımları planlaşdırır, onları arxa planda avtomatik icra etmir.",
+        status:"automation_plan_created"
+      };
+    }
+  },
+
+  Workflow:{
+    name:"AGAGENT AI Workflow Manager",version:"2.0",
+    runFullWorkflow(topic,platform="YouTube"){
+      if(!topic || !topic.trim()) return {success:false,message:"Video mövzusu daxil edilməyib."};
+      const video=AgentRegistry.VideoProductionAgent.createPlan(topic,platform);
+      const editing=AgentRegistry.VideoEditingAgent.createEditingPlan(topic,platform);
+      const content=AgentRegistry.ContentCreationAgent.createContent(topic,platform);
+      const automation=AgentRegistry.AutomationAgent.createAutomationPlan(topic);
+      return {success:true,topic:topic.trim(),platform,videoPlan:video,editingPlan:editing,contentPlan:content,automationPlan:automation,status:"workflow_completed"};
+    }
+  }
 };
+
+const names=["Manager Agent","Video Production Agent","Video Editing Agent","Content Creation Agent","Automation Agent"];
+const states={};
+const agentsElement=document.getElementById("agents");
+names.forEach((name,i)=>{
+  states[i]=false;
+  const card=document.createElement("div");
+  card.className="card";
+  const heading=document.createElement("h3"); heading.textContent="🤖 "+name;
+  const status=document.createElement("p"); status.className="status"; status.id="status"+i; status.textContent="● Offline";
+  const button=document.createElement("button"); button.id="btn"+i; button.textContent="Activate Agent";
+  button.addEventListener("click",()=>{
+    states[i]=!states[i];
+    status.textContent=states[i]?"● Active":"● Offline";
+    button.textContent=states[i]?"Deactivate Agent":"Activate Agent";
+    document.getElementById("active").textContent=Object.values(states).filter(Boolean).length;
+    notify(name+(states[i]?" activated":" deactivated"));
+  });
+  card.append(heading,status,button); agentsElement.appendChild(card);
 });
 
 function notify(message){
-const logs=document.getElementById("logs");
-logs.innerHTML=message+"<br>"+logs.innerHTML;
+  const logs=document.getElementById("logs");
+  logs.textContent=message+" | "+logs.textContent;
 }
-
+function showResult(text){
+  document.getElementById("managerResult").textContent=text;
+}
 function sendManagerTask(){
-const input=document.getElementById("managerTask");
-const result=document.getElementById("managerResult");
-if(!input.value.trim()){result.textContent="Zəhmət olmasa tapşırıq yaz.";return;}
-
-const response=ManagerAgent.processTask(input.value);
-if(!response.success){result.textContent=response.message;return;}
-
-let output="Tapşırıq yönləndirildi: "+response.assignedAgent;
-
-if(response.assignedAgent==="Video Production Agent"){
-const plan=VideoProductionAgent.createPlan(input.value);
-output+="\n\nVİDEO PLANI:\n"+plan.structure.join("\n");
-output+="\n\nMATERİALLAR:\n"+plan.deliverables.join("\n");
-output+="\n\nVIDEO BAŞLIĞI:\n"+plan.title;
-output+="\n\nTAM SSENARİ:\n"+plan.script.join("\n\n");
+  const task=document.getElementById("managerTask").value;
+  const platform=document.getElementById("platform").value;
+  const response=AgentRegistry.ManagerAgent.processTask(task);
+  if(!response.success){showResult(response.message);return;}
+  let output="Tapşırıq yönləndirildi: "+response.assignedAgent;
+  if(response.assignedAgent==="Video Production Agent"){
+    const p=AgentRegistry.VideoProductionAgent.createPlan(task,platform);
+    output+="\n\nVİDEO BAŞLIĞI:\n"+p.title+"\n\nSƏHNƏLƏR:\n"+p.scenes.map(s=>`${s.scene}. ${s.title} (${s.duration})\nVizual: ${s.visual}\nDiktor: ${s.narration}\nEkran yazısı: ${s.screenText}`).join("\n\n");
+  }else if(response.assignedAgent==="Video Editing Agent"){
+    const p=AgentRegistry.VideoEditingAgent.createEditingPlan(task,platform);
+    output+="\n\nMONTAJ PLANI:\n"+p.editingSteps.join("\n")+"\n\nİXRAC: "+p.exportSettings.format+" | "+p.exportSettings.resolution+" | "+p.exportSettings.frameRate;
+  }else if(response.assignedAgent==="Content Creation Agent"){
+    const p=AgentRegistry.ContentCreationAgent.createContent(task,platform);
+    output+="\n\nBAŞLIQ: "+p.title+"\n\nTƏSVİR: "+p.description+"\n\nPAYLAŞIM: "+p.caption+"\n\nHASHTAGLƏR: "+p.hashtags.join(" ");
+  }else{
+    const p=AgentRegistry.AutomationAgent.createAutomationPlan(task);
+    output+="\n\nAVTOMATLAŞDIRMA PLANI:\n"+p.steps.join("\n")+"\n\n"+p.result;
+  }
+  showResult(output); notify("Tapşırıq "+response.assignedAgent+" agentinə yönləndirildi.");
 }
-else if(response.assignedAgent==="Video Editing Agent"){
-const plan=VideoEditingAgent.createEditingPlan(input.value);
-output+="\n\nMONTAJ PLANI:\n"+plan.editingSteps.join("\n");
-output+="\n\nFORMAT: "+plan.exportSettings.format;
-output+="\nKEYFİYYƏT: "+plan.exportSettings.resolution;
-output+="\nFPS: "+plan.exportSettings.frameRate;
-}
-else if(response.assignedAgent==="Content Creation Agent"){
-const plan=ContentCreationAgent.createContent(input.value);
-output+="\n\nBAŞLIQ: "+plan.title;
-output+="\nTƏSVİR: "+plan.description;
-output+="\nPAYLAŞIM: "+plan.caption;
-output+="\nHASHTAGLƏR: "+plan.hashtags.join(" ");
-}
-else if(response.assignedAgent==="Automation Agent"){
-const plan=AutomationAgent.createAutomationPlan(input.value);
-output+="\n\nAVTOMATLAŞDIRMA PLANI:\n"+plan.steps.join("\n");
-output+="\n\nNƏTİCƏ:\n"+plan.result;
-}
-
-result.textContent=output;
-}
-
 function runFullWorkflow(){
-const input=document.getElementById("managerTask");
-const result=document.getElementById("managerResult");
-
-if(!input.value.trim()){
-result.textContent="Zəhmət olmasa video mövzusu yaz.";
-return;
-}
-
-const workflow=AGAGENTWorkflow.runFullWorkflow(input.value);
-if(!workflow.success){result.textContent=workflow.message;return;}
-
-let output="AGAGENT AI — TAM İSTEHSAL WORKFLOW";
-output+="\n\nMÖVZU: "+workflow.topic;
-output+="\n\n1. VIDEO PLAN:\n"+workflow.videoPlan.structure.join("\n");
-output+="\n\nVIDEO BAŞLIĞI:\n"+workflow.videoPlan.title;
-output+="\n\nTAM SSENARİ:\n"+workflow.videoPlan.script.join("\n\n");
-output+="\n\nHAZIRLANAN MATERİALLAR:\n"+workflow.videoPlan.deliverables.join("\n");
-output+="\n\n2. MONTAJ PLANI:\n"+workflow.editingPlan.editingSteps.join("\n");
-output+="\n\n3. KONTENT:";
-output+="\nBAŞLIQ: "+workflow.contentPlan.title;
-output+="\nTƏSVİR: "+workflow.contentPlan.description;
-output+="\nHASHTAGLƏR: "+workflow.contentPlan.hashtags.join(" ");
-output+="\n\n4. AVTOMATLAŞDIRMA:\n"+workflow.automationPlan.steps.join("\n");
-output+="\n\nSTATUS: "+workflow.status;
-
-result.textContent=output;
+  const task=document.getElementById("managerTask").value;
+  const platform=document.getElementById("platform").value;
+  const w=AgentRegistry.Workflow.runFullWorkflow(task,platform);
+  if(!w.success){showResult(w.message);return;}
+  const v=w.videoPlan;
+  let out="AGAGENT AI — TAM İSTEHSAL WORKFLOW\n\nMÖVZU: "+w.topic+"\nPLATFORMA: "+w.platform;
+  out+="\n\n1. VIDEO PLAN:\n"+v.structure.map((x,i)=>(i+1)+". "+x).join("\n");
+  out+="\n\nVIDEO BAŞLIĞI:\n"+v.title;
+  out+="\n\n2. SƏHNƏ-SƏHNƏ İSTEHSAL PLANI:\n"+v.scenes.map(s=>`SƏHNƏ ${s.scene}: ${s.title}\nMüddət: ${s.duration}\nVizual təsvir: ${s.visual}\nDiktor mətni: ${s.narration}\nEkran yazısı: ${s.screenText}`).join("\n\n");
+  out+="\n\n3. TAM DİKTOR MƏTNİ:\n"+v.narration.join("\n\n");
+  out+="\n\n4. ALTYAZI MƏTNİ:\n"+v.narration.map((x,i)=>`[${i+1}] ${x}`).join("\n");
+  out+="\n\n5. HAZIRLANAN MATERİALLAR:\n"+v.deliverables.join("\n");
+  out+="\n\n6. MONTAJ PLANI:\n"+w.editingPlan.editingSteps.join("\n");
+  out+="\n\nİXRAC PARAMETRLƏRİ:\n"+w.editingPlan.exportSettings.format+" | "+w.editingPlan.exportSettings.resolution+" | "+w.editingPlan.exportSettings.frameRate;
+  out+="\n\n7. KONTENT:\nBAŞLIQ: "+w.contentPlan.title+"\nTƏSVİR: "+w.contentPlan.description+"\nPAYLAŞIM: "+w.contentPlan.caption+"\nHASHTAGLƏR: "+w.contentPlan.hashtags.join(" ");
+  out+="\n\n8. AVTOMATLAŞDIRMA:\n"+w.automationPlan.steps.join("\n")+"\n"+w.automationPlan.result;
+  out+="\n\nSTATUS: "+w.status+"\nQEYD: Bu G1.6 prototipidir; plan və mətn yaradır, real video faylı istehsal etmir.";
+  showResult(out); notify("Full Workflow tamamlandı: "+w.topic);
 }
 </script>
-
-<script src="manager.js"></script>
-<script src="video.js"></script>
-<script src="editing.js"></script>
-<script src="content.js"></script>
-<script src="automation.js"></script>
-<script src="workflow.js"></script>
 </body>
 </html>
