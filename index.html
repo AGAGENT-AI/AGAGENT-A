@@ -157,50 +157,43 @@ logs.innerHTML=message+"<br>"+logs.innerHTML;
 <script src="editing.js"></script>
  <script src="content.js"></script>
 <script>
+
 function sendManagerTask() {
     const input = document.getElementById("managerTask");
     const result = document.getElementById("managerResult");
 
     const response = ManagerAgent.processTask(input.value);
 
-    if (response.success) {
+    if (!response.success) {
+        result.textContent = response.message;
+        return;
+    }
+
     let output = "Tapşırıq yönləndirildi: " + response.assignedAgent;
 
     if (response.assignedAgent === "Video Production Agent") {
         const plan = VideoProductionAgent.createPlan(input.value);
-
-        output += "\n\nVİDEO PLANI:\n";
-        output += plan.structure.join("\n");
-        output += "\n\nHazırlanacaq materiallar:\n";
-        output += plan.deliverables.join("\n");
+        output += "\n\nVİDEO PLANI:\n" + plan.structure.join("\n");
+        output += "\n\nMATERİALLAR:\n" + plan.deliverables.join("\n");
+    }
+    else if (response.assignedAgent === "Video Editing Agent") {
+        const plan = VideoEditingAgent.createEditingPlan(input.value);
+        output += "\n\nMONTAJ PLANI:\n" + plan.editingSteps.join("\n");
+        output += "\n\nFORMAT: " + plan.exportSettings.format;
+        output += "\nKEYFİYYƏT: " + plan.exportSettings.resolution;
+        output += "\nFPS: " + plan.exportSettings.frameRate;
+    }
+    else if (response.assignedAgent === "Content Creation Agent") {
+        const plan = ContentCreationAgent.createContent(input.value);
+        output += "\n\nBAŞLIQ: " + plan.title;
+        output += "\nTƏSVİR: " + plan.description;
+        output += "\nPAYLAŞIM: " + plan.caption;
+        output += "\nHASHTAGLƏR: " + plan.hashtags.join(" ");
     }
 
-   if (response.assignedAgent === "Video Editing Agent") {
-    const plan = VideoEditingAgent.createEditingPlan(input.value);
+    result.textContent = output;
+}
 
-    if (plan.success) {
-        output += "\n\nMONTAJ PLANI:\n";
-        output += plan.editingSteps.join("\n");
-        output += "\n\nİXRAC PARAMETRLƏRİ:\n";
-        output += "Format: " + plan.exportSettings.format + "\n";
-        output += "Keyfiyyət: " + plan.exportSettings.resolution + "\n";
-        output += "FPS: " + plan.exportSettings.frameRate;
-    }
-     if (response.assignedAgent === "Content Creation Agent") {
-    const plan = ContentCreationAgent.createContent(input.value);
-
-    if (plan.success) {
-        output += "\n\nCONTENT CREATION PLAN:\n";
-        output += "Başlıq: " + plan.title + "\n";
-        output += "Təsvir: " + plan.description + "\n";
-        output += "Paylaşım mətni: " + plan.caption + "\n";
-        output += "Hashtaglər: " + plan.hashtags.join(" ");
-    } 
-   } result.textContent = output;
-} else {
-    result.textContent = response.message;
-    }
- }
 </script><div style="margin:20px;padding:20px;background:#151b2b;border-radius:12px;">
     <h2>AGAGENT AI – Manager</h2>
     <input
