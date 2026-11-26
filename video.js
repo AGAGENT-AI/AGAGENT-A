@@ -1,6 +1,7 @@
+
 const VideoProductionAgent = {
     name: "AGAGENT Video Production Agent",
-    version: "1.0",
+    version: "2.0",
 
     createPlan(topic, platform = "YouTube") {
         if (!topic || !topic.trim()) {
@@ -10,25 +11,40 @@ const VideoProductionAgent = {
             };
         }
 
+        const cleanTopic = topic.trim();
+
         return {
             success: true,
             agent: this.name,
-            topic: topic,
-            platform: platform,
+            topic: cleanTopic,
+            platform,
+
+            title: `${cleanTopic} — Bilməli olduğunuz hər şey!`,
+
             structure: [
                 "Güclü giriş və diqqətçəkən başlıq",
-                "Mövzunun əsas təqdimatı",
+                "Mövzunun ətraflı təqdimatı",
                 "Əsas məlumatlar və maraqlı faktlar",
+                "Nümunələr və praktiki izahlar",
                 "Nəticə və izləyiciyə çağırış"
             ],
+
+            script: [
+                `GİRİŞ: Salam! Bu gün ${cleanTopic} haqqında danışacağıq.`,
+                `TƏQDİMAT: Gəlin ${cleanTopic} mövzusunu birlikdə araşdıraq.`,
+                "ƏSAS HİSSƏ: Mövzunun vacib məqamlarını, nümunələrini və faydalarını izah edirik.",
+                "NƏTİCƏ: Ümid edirik ki, bu video sizin üçün faydalı oldu. Kanalımıza abunə olmağı unutmayın!"
+            ],
+
             deliverables: [
-                "Video ssenarisi",
+                "Tam video ssenarisi",
                 "Səhnə planı",
-                "Səs mətni",
+                "Diktor mətni",
                 "Altyazı mətni",
                 "Video başlığı"
             ],
-            status: "plan_created"
+
+            status: "production_plan_created"
         };
     }
 };
