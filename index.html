@@ -156,7 +156,9 @@ logs.innerHTML=message+"<br>"+logs.innerHTML;
  <script src="video.js"></script>
 <script src="editing.js"></script>
  <script src="content.js"></script>
-<script>
+<script src="automation.js"></script>
+ <script>
+
 
 function sendManagerTask() {
     const input = document.getElementById("managerTask");
@@ -190,7 +192,16 @@ function sendManagerTask() {
         output += "\nPAYLAŞIM: " + plan.caption;
         output += "\nHASHTAGLƏR: " + plan.hashtags.join(" ");
     }
+else if (response.assignedAgent === "Automation Agent") {
+    const plan = AutomationAgent.createAutomationPlan(input.value);
 
+    if (plan.success) {
+        output += "\n\nAVTOMATLAŞDIRMA PLANI:\n";
+        output += plan.steps.join("\n");
+        output += "\n\nNƏTİCƏ:\n";
+        output += plan.result;
+    }
+}
     result.textContent = output;
 }
 
