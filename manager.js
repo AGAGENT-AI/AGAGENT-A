@@ -1,6 +1,7 @@
+
 const ManagerAgent = {
     name: "AGAGENT Manager",
-    version: "2.0",
+    version: "3.0",
 
     agents: {
         video: "Video Production Agent",
@@ -35,16 +36,26 @@ const ManagerAgent = {
         ) {
             agent = "editing";
         } else if (
+            text.includes("avtomat") ||
+            text.includes("tekrarla")
+        ) {
+            agent = "automation";
+        } else if (
+            text.includes("basliq") ||
+            text.includes("tesvir") ||
+            text.includes("hashtag") ||
+            text.includes("paylasim") ||
+            text.includes("kontent") ||
+            text.includes("caption") ||
+            text.includes("description")
+        ) {
+            agent = "content";
+        } else if (
             text.includes("video") ||
             text.includes("film") ||
             text.includes("rolik")
         ) {
             agent = "video";
-        } else if (
-            text.includes("avtomat") ||
-            text.includes("tekrarla")
-        ) {
-            agent = "automation";
         }
 
         return {
