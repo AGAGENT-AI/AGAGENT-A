@@ -179,6 +179,9 @@ function sendManagerTask() {
         output += "\n\nVİDEO PLANI:\n" + plan.structure.join("\n");
         output += "\n\nMATERİALLAR:\n" + plan.deliverables.join("\n");
     }
+output += "\n\nVIDEO BAŞLIĞI:\n" + plan.title;
+output += "\n\nTAM SSENARİ:\n" + plan.script.join("\n\n");
+
     else if (response.assignedAgent === "Video Editing Agent") {
         const plan = VideoEditingAgent.createEditingPlan(input.value);
         output += "\n\nMONTAJ PLANI:\n" + plan.editingSteps.join("\n");
