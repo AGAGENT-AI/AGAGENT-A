@@ -157,6 +157,7 @@ logs.innerHTML=message+"<br>"+logs.innerHTML;
 <script src="editing.js"></script>
  <script src="content.js"></script>
 <script src="automation.js"></script>
+ <script src="workflow.js"></script>
  <script>
 
 
@@ -205,6 +206,41 @@ else if (response.assignedAgent === "Automation Agent") {
     result.textContent = output;
 }
 
+
+
+
+function runFullWorkflow() {
+    const input = document.getElementById("managerTask");
+    const result = document.getElementById("managerResult");
+
+    const workflow = AGAGENTWorkflow.runFullWorkflow(input.value);
+
+    if (!workflow.success) {
+        result.textContent = workflow.message;
+        return;
+    }
+
+    let output = "AGAGENT AI — TAM İSTEHSAL WORKFLOW";
+    output += "\n\nMÖVZU: " + workflow.topic;
+
+    output += "\n\n1. VIDEO PLAN:";
+    output += "\n" + workflow.videoPlan.structure.join("\n");
+
+    output += "\n\n2. MONTAJ PLANI:";
+    output += "\n" + workflow.editingPlan.editingSteps.join("\n");
+
+    output += "\n\n3. KONTENT:";
+    output += "\nBAŞLIQ: " + workflow.contentPlan.title;
+    output += "\nTƏSVİR: " + workflow.contentPlan.description;
+    output += "\nHASHTAGLƏR: " + workflow.contentPlan.hashtags.join(" ");
+
+    output += "\n\n4. AVTOMATLAŞDIRMA:";
+    output += "\n" + workflow.automationPlan.steps.join("\n");
+
+    output += "\n\nSTATUS: " + workflow.status;
+
+    result.textContent = output;
+}
 </script><div style="margin:20px;padding:20px;background:#151b2b;border-radius:12px;">
     <h2>AGAGENT AI – Manager</h2>
     <input
@@ -215,6 +251,9 @@ else if (response.assignedAgent === "Automation Agent") {
     >
     <button onclick="sendManagerTask()">
         Tapşırığı göndər
+    <button onclick="runFullWorkflow()" style="margin-top:10px;width:100%;background:#16a085;">
+    🚀 TAM İSTEHSAL (FULL WORKFLOW)
+    </button>
     </button>
     <p id="managerResult"></p>
 </div>
