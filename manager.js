@@ -1,6 +1,6 @@
 const ManagerAgent = {
     name: "AGAGENT Manager",
-    version: "1.0",
+    version: "2.0",
 
     agents: {
         video: "Video Production Agent",
@@ -10,22 +10,40 @@ const ManagerAgent = {
     },
 
     processTask(task) {
-        if (!task || typeof task !== "string") {
+        if (!task || !task.trim()) {
             return {
                 success: false,
-                message: "Tapşırıq daxil edilməyib."
+                message: "Zəhmət olmasa tapşırıq yaz."
             };
         }
 
-        const text = task.toLowerCase();
+        const text = task.toLowerCase()
+            .replace(/ı/g, "i")
+            .replace(/ə/g, "e")
+            .replace(/ş/g, "s")
+            .replace(/ç/g, "c")
+            .replace(/ğ/g, "g")
+            .replace(/ö/g, "o")
+            .replace(/ü/g, "u");
 
         let agent = "content";
 
-        if (text.includes("video yarat") || text.includes("video hazırla")) {
-            agent = "video";
-        } else if (text.includes("montaj") || text.includes("redaktə")) {
+        if (
+            text.includes("montaj") ||
+            text.includes("redakte") ||
+            text.includes("edit")
+        ) {
             agent = "editing";
-        } else if (text.includes("avtomat") || text.includes("təkrarla")) {
+        } else if (
+            text.includes("video") ||
+            text.includes("film") ||
+            text.includes("rolik")
+        ) {
+            agent = "video";
+        } else if (
+            text.includes("avtomat") ||
+            text.includes("tekrarla")
+        ) {
             agent = "automation";
         }
 
@@ -37,6 +55,10 @@ const ManagerAgent = {
         };
     }
 };
+
+if (typeof window !== "undefined") {
+    window.ManagerAgent = ManagerAgent;
+}
 
 if (typeof module !== "undefined") {
     module.exports = ManagerAgent;
