@@ -1,0 +1,156 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AGAGENT AI | Control Center</title>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;
+ background:#080d18;
+ color:#edf2ff;
+ font-family:Arial,sans-serif;
+}
+header{
+ padding:22px;
+ background:#111a2b;
+ border-bottom:1px solid #26344d;
+}
+header h1{margin:0;color:#55b8ff}
+header p{color:#91a4c2;margin-bottom:0}
+main{padding:20px;max-width:1100px;margin:auto}
+h2{margin-top:28px}
+.stats{
+ display:grid;
+ grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+ gap:12px;
+}
+.card{
+ background:#131e31;
+ border:1px solid #263b59;
+ border-radius:12px;
+ padding:18px;
+ margin-bottom:12px;
+}
+.number{font-size:28px;font-weight:bold;color:#55b8ff}
+.agents{
+ display:grid;
+ grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+ gap:12px;
+}
+button{
+ background:#1689df;
+ color:white;
+ border:0;
+ padding:12px 17px;
+ border-radius:8px;
+ font-weight:bold;
+ cursor:pointer;
+}
+button:hover{background:#0871bd}
+.status{color:#65e6a0;font-size:13px}
+.log{color:#9eb0ca;font-size:14px}
+footer{text-align:center;padding:30px;color:#7586a2}
+</style>
+</head>
+<body>
+
+<header>
+<h1>⚡ AGAGENT AI</h1>
+<p>Professional AI Agent Control Center</p>
+</header>
+
+<main>
+
+<h2>📊 System Overview</h2>
+<div class="stats">
+<div class="card">
+<div class="number" id="total">5</div>
+AI Agents
+</div>
+<div class="card">
+<div class="number" id="active">0</div>
+Active Agents
+</div>
+<div class="card">
+<div class="number">G1</div>
+Project Phase
+</div>
+<div class="card">
+<div class="number">v1.0</div>
+Dashboard
+</div>
+</div>
+
+<h2>🤖 AI Agent Management</h2>
+<div class="agents" id="agents"></div>
+
+<h2>🎬 Production Center</h2>
+<div class="card">
+<h3>Video Production</h3>
+<p>Video creation workflow</p>
+<button onclick="notify('Video Production module selected')">Open Module</button>
+</div>
+
+<div class="card">
+<h3>✍️ Content Creation</h3>
+<p>Content planning and creation</p>
+<button onclick="notify('Content Creation module selected')">Open Module</button>
+</div>
+
+<h2>📋 Activity Log</h2>
+<div class="card log" id="logs">
+System initialized successfully.
+</div>
+
+</main>
+
+<footer>
+AGAGENT AI © 2026 | Control Center
+</footer>
+
+<script>
+const names=[
+"Manager Agent",
+"Video Production Agent",
+"Video Editing Agent",
+"Content Creation Agent",
+"Automation Agent"
+];
+
+const agents=document.getElementById("agents");
+const states={};
+
+names.forEach((name,i)=>{
+states[i]=false;
+const card=document.createElement("div");
+card.className="card";
+card.innerHTML=`
+<h3>🤖 ${name}</h3>
+<p class="status" id="status${i}">● Offline</p>
+<button id="btn${i}">Activate Agent</button>
+`;
+agents.appendChild(card);
+
+document.getElementById("btn"+i).onclick=()=>{
+states[i]=!states[i];
+document.getElementById("status"+i).textContent=
+states[i]?"● Active":"● Offline";
+document.getElementById("btn"+i).textContent=
+states[i]?"Deactivate Agent":"Activate Agent";
+document.getElementById("active").textContent=
+Object.values(states).filter(Boolean).length;
+notify(name+(states[i]?" activated":" deactivated"));
+};
+});
+
+function notify(message){
+const logs=document.getElementById("logs");
+logs.innerHTML=message+"<br>"+logs.innerHTML;
+}
+</script>
+
+</body>
+</html>
