@@ -153,6 +153,7 @@ logs.innerHTML=message+"<br>"+logs.innerHTML;
 </script>
 
 <script src="manager.js"></script>
+ <script src="video.js"></script>
 
 <script>
 function sendManagerTask() {
@@ -161,9 +162,22 @@ function sendManagerTask() {
 
     const response = ManagerAgent.processTask(input.value);
 
-    result.textContent = response.success
-        ? "Tapşırıq yönləndirildi: " + response.assignedAgent
-        : response.message;
+    if (response.success) {
+    let output = "Tapşırıq yönləndirildi: " + response.assignedAgent;
+
+    if (response.assignedAgent === "Video Production Agent") {
+        const plan = VideoProductionAgent.createPlan(input.value);
+
+        output += "\n\nVİDEO PLANI:\n";
+        output += plan.structure.join("\n");
+        output += "\n\nHazırlanacaq materiallar:\n";
+        output += plan.deliverables.join("\n");
+    }
+
+    result.textContent = output;
+} else {
+    result.textContent = response.message;
+    }
 }
 </script><div style="margin:20px;padding:20px;background:#151b2b;border-radius:12px;">
     <h2>AGAGENT AI – Manager</h2>
