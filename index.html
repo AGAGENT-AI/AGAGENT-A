@@ -152,5 +152,31 @@ logs.innerHTML=message+"<br>"+logs.innerHTML;
 }
 </script>
 
+<script src="manager.js"></script>
+
+<script>
+function sendManagerTask() {
+    const input = document.getElementById("managerTask");
+    const result = document.getElementById("managerResult");
+
+    const response = ManagerAgent.processTask(input.value);
+
+    result.textContent = response.success
+        ? "Tapşırıq yönləndirildi: " + response.assignedAgent
+        : response.message;
+}
+</script><div style="margin:20px;padding:20px;background:#151b2b;border-radius:12px;">
+    <h2>AGAGENT AI – Manager</h2>
+    <input
+        id="managerTask"
+        type="text"
+        placeholder="Tapşırığını yaz..."
+        style="width:100%;padding:12px;margin-bottom:10px;"
+    >
+    <button onclick="sendManagerTask()">
+        Tapşırığı göndər
+    </button>
+    <p id="managerResult"></p>
+</div>
 </body>
 </html>
