@@ -1,87 +1,43 @@
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="az">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AGAGENT AI | Control Center</title>
 <style>
 *{box-sizing:border-box}
-body{
- margin:0;
- background:#080d18;
- color:#edf2ff;
- font-family:Arial,sans-serif;
-}
-header{
- padding:22px;
- background:#111a2b;
- border-bottom:1px solid #26344d;
-}
+body{margin:0;background:#080d18;color:#edf2ff;font-family:Arial,sans-serif}
+header{padding:22px;background:#111a2b;border-bottom:1px solid #26344d}
 header h1{margin:0;color:#55b8ff}
 header p{color:#91a4c2;margin-bottom:0}
 main{padding:20px;max-width:1100px;margin:auto}
 h2{margin-top:28px}
-.stats{
- display:grid;
- grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
- gap:12px;
-}
-.card{
- background:#131e31;
- border:1px solid #263b59;
- border-radius:12px;
- padding:18px;
- margin-bottom:12px;
-}
+.stats,.agents{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px}
+.card{background:#131e31;border:1px solid #263b59;border-radius:12px;padding:18px;margin-bottom:12px}
 .number{font-size:28px;font-weight:bold;color:#55b8ff}
-.agents{
- display:grid;
- grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
- gap:12px;
-}
-button{
- background:#1689df;
- color:white;
- border:0;
- padding:12px 17px;
- border-radius:8px;
- font-weight:bold;
- cursor:pointer;
-}
+button{background:#1689df;color:white;border:0;padding:12px 17px;border-radius:8px;font-weight:bold;cursor:pointer;margin:4px 0}
 button:hover{background:#0871bd}
 .status{color:#65e6a0;font-size:13px}
 .log{color:#9eb0ca;font-size:14px}
+input{width:100%;padding:12px;margin-bottom:10px;border-radius:8px}
+#managerResult{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.6}
 footer{text-align:center;padding:30px;color:#7586a2}
 </style>
 </head>
 <body>
-
 <header>
 <h1>⚡ AGAGENT AI</h1>
 <p>Professional AI Agent Control Center</p>
 </header>
 
 <main>
-
 <h2>📊 System Overview</h2>
 <div class="stats">
-<div class="card">
-<div class="number" id="total">5</div>
-AI Agents
-</div>
-<div class="card">
-<div class="number" id="active">0</div>
-Active Agents
-</div>
-<div class="card">
-<div class="number">G1</div>
-Project Phase
-</div>
-<div class="card">
-<div class="number">v1.0</div>
-Dashboard
-</div>
+<div class="card"><div class="number">5</div>AI Agents</div>
+<div class="card"><div class="number" id="active">0</div>Active Agents</div>
+<div class="card"><div class="number">G1</div>Project Phase</div>
+<div class="card"><div class="number">v1.0</div>Dashboard</div>
 </div>
 
 <h2>🤖 AI Agent Management</h2>
@@ -101,15 +57,20 @@ Dashboard
 </div>
 
 <h2>📋 Activity Log</h2>
-<div class="card log" id="logs">
-System initialized successfully.
-</div>
+<div class="card log" id="logs">System initialized successfully.</div>
 
+<div class="card">
+<h2>AGAGENT AI – Manager</h2>
+<input id="managerTask" type="text" placeholder="Tapşırığını yaz...">
+<button onclick="sendManagerTask()">Tapşırığı göndər</button>
+<button onclick="runFullWorkflow()" style="width:100%;background:#16a085">
+🚀 TAM İSTEHSAL (FULL WORKFLOW)
+</button>
+<p id="managerResult"></p>
+</div>
 </main>
 
-<footer>
-AGAGENT AI © 2026 | Control Center
-</footer>
+<footer>AGAGENT AI © 2026 | Control Center</footer>
 
 <script>
 const names=[
@@ -130,18 +91,14 @@ card.className="card";
 card.innerHTML=`
 <h3>🤖 ${name}</h3>
 <p class="status" id="status${i}">● Offline</p>
-<button id="btn${i}">Activate Agent</button>
-`;
+<button id="btn${i}">Activate Agent</button>`;
 agents.appendChild(card);
 
 document.getElementById("btn"+i).onclick=()=>{
 states[i]=!states[i];
-document.getElementById("status"+i).textContent=
-states[i]?"● Active":"● Offline";
-document.getElementById("btn"+i).textContent=
-states[i]?"Deactivate Agent":"Activate Agent";
-document.getElementById("active").textContent=
-Object.values(states).filter(Boolean).length;
+document.getElementById("status"+i).textContent=states[i]?"● Active":"● Offline";
+document.getElementById("btn"+i).textContent=states[i]?"Deactivate Agent":"Activate Agent";
+document.getElementById("active").textContent=Object.values(states).filter(Boolean).length;
 notify(name+(states[i]?" activated":" deactivated"));
 };
 });
@@ -150,121 +107,82 @@ function notify(message){
 const logs=document.getElementById("logs");
 logs.innerHTML=message+"<br>"+logs.innerHTML;
 }
+
+function sendManagerTask(){
+const input=document.getElementById("managerTask");
+const result=document.getElementById("managerResult");
+if(!input.value.trim()){result.textContent="Zəhmət olmasa tapşırıq yaz.";return;}
+
+const response=ManagerAgent.processTask(input.value);
+if(!response.success){result.textContent=response.message;return;}
+
+let output="Tapşırıq yönləndirildi: "+response.assignedAgent;
+
+if(response.assignedAgent==="Video Production Agent"){
+const plan=VideoProductionAgent.createPlan(input.value);
+output+="\n\nVİDEO PLANI:\n"+plan.structure.join("\n");
+output+="\n\nMATERİALLAR:\n"+plan.deliverables.join("\n");
+output+="\n\nVIDEO BAŞLIĞI:\n"+plan.title;
+output+="\n\nTAM SSENARİ:\n"+plan.script.join("\n\n");
+}
+else if(response.assignedAgent==="Video Editing Agent"){
+const plan=VideoEditingAgent.createEditingPlan(input.value);
+output+="\n\nMONTAJ PLANI:\n"+plan.editingSteps.join("\n");
+output+="\n\nFORMAT: "+plan.exportSettings.format;
+output+="\nKEYFİYYƏT: "+plan.exportSettings.resolution;
+output+="\nFPS: "+plan.exportSettings.frameRate;
+}
+else if(response.assignedAgent==="Content Creation Agent"){
+const plan=ContentCreationAgent.createContent(input.value);
+output+="\n\nBAŞLIQ: "+plan.title;
+output+="\nTƏSVİR: "+plan.description;
+output+="\nPAYLAŞIM: "+plan.caption;
+output+="\nHASHTAGLƏR: "+plan.hashtags.join(" ");
+}
+else if(response.assignedAgent==="Automation Agent"){
+const plan=AutomationAgent.createAutomationPlan(input.value);
+output+="\n\nAVTOMATLAŞDIRMA PLANI:\n"+plan.steps.join("\n");
+output+="\n\nNƏTİCƏ:\n"+plan.result;
+}
+
+result.textContent=output;
+}
+
+function runFullWorkflow(){
+const input=document.getElementById("managerTask");
+const result=document.getElementById("managerResult");
+
+if(!input.value.trim()){
+result.textContent="Zəhmət olmasa video mövzusu yaz.";
+return;
+}
+
+const workflow=AGAGENTWorkflow.runFullWorkflow(input.value);
+if(!workflow.success){result.textContent=workflow.message;return;}
+
+let output="AGAGENT AI — TAM İSTEHSAL WORKFLOW";
+output+="\n\nMÖVZU: "+workflow.topic;
+output+="\n\n1. VIDEO PLAN:\n"+workflow.videoPlan.structure.join("\n");
+output+="\n\nVIDEO BAŞLIĞI:\n"+workflow.videoPlan.title;
+output+="\n\nTAM SSENARİ:\n"+workflow.videoPlan.script.join("\n\n");
+output+="\n\nHAZIRLANAN MATERİALLAR:\n"+workflow.videoPlan.deliverables.join("\n");
+output+="\n\n2. MONTAJ PLANI:\n"+workflow.editingPlan.editingSteps.join("\n");
+output+="\n\n3. KONTENT:";
+output+="\nBAŞLIQ: "+workflow.contentPlan.title;
+output+="\nTƏSVİR: "+workflow.contentPlan.description;
+output+="\nHASHTAGLƏR: "+workflow.contentPlan.hashtags.join(" ");
+output+="\n\n4. AVTOMATLAŞDIRMA:\n"+workflow.automationPlan.steps.join("\n");
+output+="\n\nSTATUS: "+workflow.status;
+
+result.textContent=output;
+}
 </script>
 
 <script src="manager.js"></script>
- <script src="video.js"></script>
+<script src="video.js"></script>
 <script src="editing.js"></script>
- <script src="content.js"></script>
+<script src="content.js"></script>
 <script src="automation.js"></script>
- <script src="workflow.js"></script>
- <script>
-
-
-function sendManagerTask() {
-    const input = document.getElementById("managerTask");
-    const result = document.getElementById("managerResult");
-
-    const response = ManagerAgent.processTask(input.value);
-
-    if (!response.success) {
-        result.textContent = response.message;
-        return;
-    }
-
-    let output = "Tapşırıq yönləndirildi: " + response.assignedAgent;
-
-    if (response.assignedAgent === "Video Production Agent") {
-        const plan = VideoProductionAgent.createPlan(input.value);
-        output += "\n\nVİDEO PLANI:\n" + plan.structure.join("\n");
-        output += "\n\nMATERİALLAR:\n" + plan.deliverables.join("\n");
-    }
-output += "\n\nVIDEO BAŞLIĞI:\n" + plan.title;
-output += "\n\nTAM SSENARİ:\n" + plan.script.join("\n\n");
-
-    else if (response.assignedAgent === "Video Editing Agent") {
-        const plan = VideoEditingAgent.createEditingPlan(input.value);
-        output += "\n\nMONTAJ PLANI:\n" + plan.editingSteps.join("\n");
-        output += "\n\nFORMAT: " + plan.exportSettings.format;
-        output += "\nKEYFİYYƏT: " + plan.exportSettings.resolution;
-        output += "\nFPS: " + plan.exportSettings.frameRate;
-    }
-    else if (response.assignedAgent === "Content Creation Agent") {
-        const plan = ContentCreationAgent.createContent(input.value);
-        output += "\n\nBAŞLIQ: " + plan.title;
-        output += "\nTƏSVİR: " + plan.description;
-        output += "\nPAYLAŞIM: " + plan.caption;
-        output += "\nHASHTAGLƏR: " + plan.hashtags.join(" ");
-    }
-else if (response.assignedAgent === "Automation Agent") {
-    const plan = AutomationAgent.createAutomationPlan(input.value);
-
-    if (plan.success) {
-        output += "\n\nAVTOMATLAŞDIRMA PLANI:\n";
-        output += plan.steps.join("\n");
-        output += "\n\nNƏTİCƏ:\n";
-        output += plan.result;
-    }
-}
-    result.textContent = output;
-}
-
-
-
-
-function runFullWorkflow() {
-    const input = document.getElementById("managerTask");
-    const result = document.getElementById("managerResult");
-
-    const workflow = AGAGENTWorkflow.runFullWorkflow(input.value);
-
-    if (!workflow.success) {
-        result.textContent = workflow.message;
-        return;
-    }
-
-    let output = "AGAGENT AI — TAM İSTEHSAL WORKFLOW";
-    output += "\n\nMÖVZU: " + workflow.topic;
-
-    output += "\n\n1. VIDEO PLAN:";
-    output += "\n" + workflow.videoPlan.structure.join("\n");
-output += "\n\nVIDEO BAŞLIĞI:\n" + workflow.videoPlan.title;
-
-output += "\n\nTAM SSENARİ:\n";
-output += workflow.videoPlan.script.join("\n\n");
-
-output += "\n\nHAZIRLANAN MATERİALLAR:\n";
-output += workflow.videoPlan.deliverables.join("\n");
-    output += "\n\n2. MONTAJ PLANI:";
-    output += "\n" + workflow.editingPlan.editingSteps.join("\n");
-
-    output += "\n\n3. KONTENT:";
-    output += "\nBAŞLIQ: " + workflow.contentPlan.title;
-    output += "\nTƏSVİR: " + workflow.contentPlan.description;
-    output += "\nHASHTAGLƏR: " + workflow.contentPlan.hashtags.join(" ");
-
-    output += "\n\n4. AVTOMATLAŞDIRMA:";
-    output += "\n" + workflow.automationPlan.steps.join("\n");
-
-    output += "\n\nSTATUS: " + workflow.status;
-
-    result.textContent = output;
-}
-</script><div style="margin:20px;padding:20px;background:#151b2b;border-radius:12px;">
-    <h2>AGAGENT AI – Manager</h2>
-    <input
-        id="managerTask"
-        type="text"
-        placeholder="Tapşırığını yaz..."
-        style="width:100%;padding:12px;margin-bottom:10px;"
-    >
-    <button onclick="sendManagerTask()">
-        Tapşırığı göndər
-    <button onclick="runFullWorkflow()" style="margin-top:10px;width:100%;background:#16a085;">
-    🚀 TAM İSTEHSAL (FULL WORKFLOW)
-    </button>
-    </button>
-    <p id="managerResult"></p>
-</div>
+<script src="workflow.js"></script>
 </body>
 </html>
