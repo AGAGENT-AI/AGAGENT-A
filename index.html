@@ -228,7 +228,13 @@ function runFullWorkflow() {
 
     output += "\n\n1. VIDEO PLAN:";
     output += "\n" + workflow.videoPlan.structure.join("\n");
+output += "\n\nVIDEO BAŞLIĞI:\n" + workflow.videoPlan.title;
 
+output += "\n\nTAM SSENARİ:\n";
+output += workflow.videoPlan.script.join("\n\n");
+
+output += "\n\nHAZIRLANAN MATERİALLAR:\n";
+output += workflow.videoPlan.deliverables.join("\n");
     output += "\n\n2. MONTAJ PLANI:";
     output += "\n" + workflow.editingPlan.editingSteps.join("\n");
 
