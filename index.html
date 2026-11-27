@@ -4,421 +4,839 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#080b16">
+<meta name="theme-color" content="#080b14">
 <title>AGAGENT AI | G6 MASTER</title>
 <style>
 :root{
-  --bg:#080b16;--panel:#111729;--panel2:#151e33;
-  --line:#25314b;--cyan:#36e4ff;--purple:#9b75ff;
-  --text:#edf3ff;--muted:#8b9ab6;--green:#43e6a0;
+  --bg:#080b14;
+  --panel:#101625;
+  --panel2:#151e30;
+  --border:#25334b;
+  --text:#edf3ff;
+  --muted:#91a0b9;
+  --blue:#48a9ff;
+  --cyan:#35e0d0;
+  --purple:#9b7cff;
+  --green:#48d69a;
   --red:#ff647c;
 }
 *{box-sizing:border-box}
 body{
- margin:0;background:radial-gradient(circle at 80% 0%,#192044 0,transparent 35%),var(--bg);
- color:var(--text);font-family:Inter,Arial,sans-serif;min-height:100vh
+  margin:0;
+  background:radial-gradient(circle at 80% 0%,#142443 0,transparent 35%),var(--bg);
+  color:var(--text);
+  font-family:Inter,Arial,sans-serif;
 }
 button,input,textarea,select{font:inherit}
 button{cursor:pointer}
-.layout{display:flex;min-height:100vh}
+.app{display:flex;min-height:100vh}
 .sidebar{
- width:245px;background:#0c1120;border-right:1px solid var(--line);
- padding:24px 16px;display:flex;flex-direction:column;gap:24px
+  width:245px;
+  background:#0b101c;
+  border-right:1px solid var(--border);
+  padding:24px 15px;
+  display:flex;
+  flex-direction:column;
+  flex-shrink:0;
 }
-.logo{font-size:21px;font-weight:900;letter-spacing:1px}
-.logo span{color:var(--cyan)}
-.version{color:var(--purple);font-size:11px;margin-top:6px;letter-spacing:2px}
-.nav-title{font-size:10px;color:var(--muted);letter-spacing:2px;margin:12px 10px}
+.brand{padding:5px 10px 27px}
+.brand h1{font-size:22px;margin:0;letter-spacing:1px}
+.brand h1 span{color:var(--cyan)}
+.brand small{color:var(--muted);font-size:10px;letter-spacing:3px}
+.nav-label{
+  color:#64738e;
+  font-size:10px;
+  letter-spacing:2px;
+  padding:12px 12px 8px;
+}
 .nav button{
- display:flex;gap:12px;align-items:center;width:100%;border:0;
- background:transparent;color:var(--muted);padding:12px;border-radius:10px;
- text-align:left;margin:3px 0
+  width:100%;
+  text-align:left;
+  border:0;
+  color:var(--muted);
+  background:transparent;
+  padding:13px 12px;
+  border-radius:9px;
+  margin:3px 0;
+  font-size:13px;
 }
-.nav button:hover,.nav button.active{background:#18233a;color:var(--cyan)}
-.side-status{margin-top:auto;padding:14px;border:1px solid var(--line);border-radius:12px}
-.main{flex:1;min-width:0;padding:25px}
-.topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:28px}
-.topbar h1{font-size:24px;margin:0}
-.topbar p{font-size:12px;color:var(--muted);margin:6px 0}
-.status{font-size:12px;color:var(--muted)}
-.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--red);margin-right:7px}
-.dot.online{background:var(--green);box-shadow:0 0 12px var(--green)}
+.nav button:hover,.nav button.active{
+  color:white;
+  background:#17243a;
+}
+.nav button.active{border-left:3px solid var(--cyan)}
+.sidebar-bottom{margin-top:auto}
+.connection{
+  border:1px solid var(--border);
+  background:var(--panel);
+  border-radius:10px;
+  padding:13px;
+  font-size:12px;
+}
+.dot{
+  display:inline-block;
+  width:8px;height:8px;
+  border-radius:50%;
+  background:#718096;
+  margin-right:7px;
+}
+.dot.online{background:var(--green);box-shadow:0 0 10px var(--green)}
+.main{flex:1;min-width:0;padding:25px 30px 50px}
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:15px;
+  margin-bottom:25px;
+}
+.topbar h2{margin:0;font-size:22px}
+.topbar p{margin:5px 0 0;color:var(--muted);font-size:12px}
+.version{
+  border:1px solid #31516d;
+  color:var(--cyan);
+  padding:8px 12px;
+  border-radius:20px;
+  font-size:11px;
+}
+.page{display:none}
+.page.active{display:block}
+.hero{
+  background:linear-gradient(115deg,#142b4b,#17203c 55%,#201a42);
+  border:1px solid #30456a;
+  border-radius:16px;
+  padding:27px;
+  margin-bottom:20px;
+}
+.hero h2{font-size:27px;margin:0 0 9px}
+.hero p{color:#b5c6e0;max-width:650px;line-height:1.6;font-size:13px}
+.eyebrow{font-size:10px;letter-spacing:3px;color:var(--cyan)}
 .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}
 .card{
- background:linear-gradient(145deg,#151e33,#101728);
- border:1px solid var(--line);border-radius:15px;padding:18px;
- box-shadow:0 8px 30px #0002
+  background:linear-gradient(145deg,var(--panel),#0e1421);
+  border:1px solid var(--border);
+  border-radius:13px;
+  padding:18px;
+  min-width:0;
 }
-.card h3{margin:0 0 8px;font-size:14px}
-.card p{margin:0;color:var(--muted);font-size:12px;line-height:1.6}
-.metric{font-size:27px;font-weight:800;color:var(--cyan);margin-top:12px}
-.section{margin-top:25px}
-.section-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:13px}
-.section-head h2{font-size:17px;margin:0}
-.agents{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
-.agent{
- background:#111a2d;border:1px solid var(--line);border-radius:13px;
- padding:15px;cursor:pointer;transition:.2s
+.card h3{font-size:14px;margin:0 0 9px}
+.card p{font-size:12px;color:var(--muted);line-height:1.6;margin:0}
+.stat{font-size:25px;font-weight:700;margin:12px 0 4px}
+.stat-label{font-size:11px;color:var(--muted)}
+.agent-icon{font-size:25px;margin-bottom:12px}
+.agent-card{transition:.2s}
+.agent-card:hover{border-color:#4c83b8;transform:translateY(-2px)}
+.status{font-size:10px;color:var(--cyan);margin-top:13px}
+.section-title{font-size:16px;margin:25px 0 14px}
+.panel{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:13px;
+  padding:20px;
+  margin-bottom:17px;
 }
-.agent:hover,.agent.selected{border-color:var(--cyan);transform:translateY(-2px)}
-.agent .symbol{font-size:23px;margin-bottom:10px}
-.agent strong{display:block;font-size:13px}
-.agent small{display:block;color:var(--muted);margin-top:6px;line-height:1.5}
-.workspace{display:grid;grid-template-columns:1.3fr .7fr;gap:15px}
-textarea,input,select{
- width:100%;background:#090f1e;color:var(--text);
- border:1px solid var(--line);border-radius:10px;padding:13px;outline:none
+label{display:block;font-size:12px;color:#b8c5da;margin:0 0 8px}
+input,textarea,select{
+  width:100%;
+  color:var(--text);
+  background:#090f1b;
+  border:1px solid #2a3a54;
+  border-radius:8px;
+  padding:12px;
+  outline:none;
 }
+input:focus,textarea:focus,select:focus{border-color:var(--blue)}
 textarea{min-height:125px;resize:vertical;line-height:1.5}
-textarea:focus,input:focus,select:focus{border-color:var(--cyan)}
-label{display:block;color:var(--muted);font-size:12px;margin:14px 0 7px}
+.field{margin-bottom:15px}
+.actions{display:flex;flex-wrap:wrap;gap:10px}
 .btn{
- background:linear-gradient(90deg,#14bcd8,#8260f5);
- border:0;border-radius:10px;color:white;padding:12px 17px;font-weight:700
+  border:1px solid #365879;
+  background:#172d49;
+  color:white;
+  border-radius:8px;
+  padding:11px 17px;
+  font-size:12px;
 }
-.btn:disabled{opacity:.5;cursor:wait}
-.btn.secondary{background:#202b44;border:1px solid var(--line)}
-.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:13px}
-.result{
- white-space:pre-wrap;line-height:1.7;color:#dce7fa;font-size:13px;
- overflow-wrap:anywhere
+.btn.primary{
+  background:linear-gradient(100deg,#1679d3,#237fe8);
+  border-color:#398ee5;
 }
-.result.empty{color:var(--muted)}
-.source{
- display:block;padding:12px;border:1px solid var(--line);
- border-radius:9px;margin-top:9px;color:var(--cyan);
- text-decoration:none;font-size:12px;overflow-wrap:anywhere
+.btn.secondary{background:#1a2131;border-color:var(--border)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.output{
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
+  background:#080e19;
+  border:1px solid var(--border);
+  border-radius:9px;
+  padding:15px;
+  color:#dce8fa;
+  font-size:12px;
+  line-height:1.7;
+  min-height:65px;
 }
-.source:hover{background:#18233a}
-.history-item{padding:12px 0;border-bottom:1px solid var(--line);font-size:12px}
-.history-item small{display:block;color:var(--muted);margin-top:5px}
+.result-card{
+  background:#0b1320;
+  border:1px solid var(--border);
+  padding:14px;
+  border-radius:9px;
+  margin-top:10px;
+}
+.result-card h4{margin:0 0 7px;font-size:13px;color:var(--cyan)}
+.result-card small{color:var(--muted)}
+.result-card p{white-space:pre-wrap;overflow-wrap:anywhere;font-size:12px;line-height:1.7}
+.source-list a{display:block;color:#69baff;font-size:12px;margin:9px 0;overflow-wrap:anywhere}
+.notice{
+  border-left:3px solid #e7ad4e;
+  padding:12px 14px;
+  background:#211d16;
+  color:#e8d4ae;
+  font-size:12px;
+  line-height:1.6;
+  border-radius:5px;
+}
+.muted{color:var(--muted);font-size:12px}
 .hidden{display:none!important}
-.notice{font-size:12px;color:var(--muted);line-height:1.6}
-.loader{color:var(--cyan);animation:pulse 1s infinite}
-@keyframes pulse{50%{opacity:.35}}
-footer{color:var(--muted);font-size:11px;text-align:center;padding:25px}
+hr{border:0;border-top:1px solid var(--border);margin:18px 0}
+.mobile-menu{display:none}
+footer{color:#60718d;font-size:10px;text-align:center;margin-top:35px}
 @media(max-width:900px){
- .sidebar{width:190px}.grid{grid-template-columns:repeat(2,1fr)}
- .agents{grid-template-columns:repeat(2,1fr)}
- .workspace{grid-template-columns:1fr}
+ .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .sidebar{width:205px}
+ .main{padding:20px}
 }
-@media(max-width:620px){
- .layout{display:block}.sidebar{width:100%;padding:15px;border-right:0;border-bottom:1px solid var(--line)}
- .nav{display:flex;overflow-x:auto}.nav-title{display:none}
- .nav button{white-space:nowrap;width:auto;font-size:11px}
- .side-status{display:none}.main{padding:16px}
- .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
- .agents{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
- .card{padding:13px}.topbar h1{font-size:19px}
+@media(max-width:650px){
+ .app{display:block}
+ .sidebar{width:100%;padding:13px;display:block;border-right:0;border-bottom:1px solid var(--border)}
+ .brand{padding:5px 8px 13px}
+ .nav{display:flex;overflow-x:auto;gap:5px}
+ .nav-label,.sidebar-bottom{display:none}
+ .nav button{white-space:nowrap;width:auto;padding:10px;font-size:11px}
+ .main{padding:17px 13px 35px}
+ .topbar{align-items:flex-start}
+ .topbar h2{font-size:18px}
+ .version{font-size:9px}
+ .grid{grid-template-columns:1fr 1fr;gap:9px}
+ .card{padding:13px}
+ .hero{padding:20px}
+ .hero h2{font-size:22px}
+}
+@media(max-width:380px){
+ .grid{grid-template-columns:1fr}
 }
 </style>
 </head>
 <body>
-<div class="layout">
+<div class="app">
+
 <aside class="sidebar">
-  <div>
-    <div class="logo">AG<span>AGENT</span> AI</div>
-    <div class="version">G6 MASTER INTERFACE</div>
+  <div class="brand">
+    <h1>AGA<span>GENT</span> AI</h1>
+    <small>G6 MASTER SYSTEM</small>
   </div>
-  <div class="nav">
-    <div class="nav-title">MAIN SYSTEM</div>
+
+  <div class="nav-label">MAIN MENU</div>
+  <nav class="nav">
     <button class="active" data-page="dashboard">◈ Dashboard</button>
     <button data-page="agents">✧ AI Agents</button>
-    <button data-page="workspace">⌘ Workspace</button>
+    <button data-page="workspace">▣ Workspace</button>
     <button data-page="history">◷ Task History</button>
     <button data-page="video">▶ Video Studio</button>
-    <button data-page="settings">⚙ Settings</button>
-  </div>
-  <div class="side-status">
-    <div style="font-size:11px;color:var(--muted)">SYSTEM STATUS</div>
-    <p id="sideStatus"><span class="dot"></span>Checking backend...</p>
-    <button class="btn secondary" style="width:100%;font-size:11px" onclick="checkHealth()">Refresh</button>
+    <button data-page="brain">◉ Shared Brain</button>
+    <button data-page="automation">⚙ Automation</button>
+    <button data-page="settings">☷ Settings</button>
+  </nav>
+
+  <div class="sidebar-bottom">
+    <div class="connection">
+      <div><span class="dot" id="connectionDot"></span><span id="connectionText">Checking backend...</span></div>
+      <p class="muted" id="backendVersion">G6 MASTER</p>
+    </div>
   </div>
 </aside>
 
 <main class="main">
 <header class="topbar">
- <div>
-  <h1 id="pageTitle">Command Center</h1>
-  <p>Intelligent Agent Operating System</p>
- </div>
- <div class="status" id="topStatus"><span class="dot"></span>Connecting</div>
+  <div>
+    <h2 id="pageTitle">Dashboard</h2>
+    <p>AGAGENT AI — Intelligent Agent Operating System</p>
+  </div>
+  <div class="version">G6 MASTER</div>
 </header>
 
-<section id="dashboard" class="page">
- <div class="grid">
-  <div class="card"><h3>AI SYSTEM</h3><p>Backend connection</p><div class="metric" id="systemMetric">CHECKING</div></div>
-  <div class="card"><h3>AI AGENTS</h3><p>Registered agents</p><div class="metric">06</div></div>
-  <div class="card"><h3>PLATFORM</h3><p>Current interface</p><div class="metric">G6</div></div>
- </div>
- <div class="section">
-  <div class="section-head"><h2>Agent Network</h2><span class="notice">6 registered agents</span></div>
-  <div class="agents" id="dashboardAgents"></div>
- </div>
- <div class="section card">
-  <h3>System Overview</h3>
-  <p id="healthDetails">Checking AI, database and research connections...</p>
- </div>
-</section>
-
-<section id="agents" class="page hidden">
- <div class="section-head"><h2>AI Agent Network</h2></div>
- <div class="agents" id="allAgents"></div>
-</section>
-
-<section id="workspace" class="page hidden">
- <div class="workspace">
-  <div class="card">
-   <h3>Agent Workspace</h3>
-   <label for="agentSelect">Select AI Agent</label>
-   <select id="agentSelect">
-    <option value="manager">AI Manager</option>
-    <option value="research">Research AI</option>
-    <option value="production">Production AI</option>
-    <option value="editing">Editing AI</option>
-    <option value="content">Content AI</option>
-    <option value="automation">Automation AI</option>
-   </select>
-   <label for="taskInput">Your Task</label>
-   <textarea id="taskInput" maxlength="4000" placeholder="Describe what you want your AI agent to do..."></textarea>
-   <div class="actions">
-    <button class="btn" id="runBtn" onclick="runAgent()">Run Agent</button>
-    <button class="btn secondary" id="workflowBtn" onclick="runWorkflow()">Run Full Workflow</button>
-   </div>
-   <p class="notice">Full Workflow runs all six agents sequentially and may take longer.</p>
+<!-- DASHBOARD -->
+<section class="page active" id="dashboard">
+  <div class="hero">
+    <div class="eyebrow">NEXT GENERATION AI SYSTEM</div>
+    <h2>Welcome to AGAGENT AI</h2>
+    <p>A unified workspace for intelligent agents, shared research, task execution and future automated video production.</p>
+    <div class="actions">
+      <button class="btn primary" onclick="showPage('workspace')">Start a Task →</button>
+      <button class="btn secondary" onclick="showPage('agents')">Explore Agents</button>
+    </div>
   </div>
-  <div class="card">
-   <h3>Execution Status</h3>
-   <div id="executionStatus" class="result empty">Waiting for a task...</div>
+
+  <div class="grid">
+    <div class="card"><div class="muted">SYSTEM VERSION</div><div class="stat">G6</div><div class="stat-label">MASTER architecture target</div></div>
+    <div class="card"><div class="muted">AI AGENTS</div><div class="stat">06</div><div class="stat-label">Registered agent roles</div></div>
+    <div class="card"><div class="muted">BACKEND</div><div class="stat" id="dashBackend">...</div><div class="stat-label">Cloudflare Worker connection</div></div>
   </div>
- </div>
- <div class="section card">
-  <div class="section-head"><h2>AI Output</h2><span id="outputAgent" class="notice">No output yet</span></div>
-  <div id="output" class="result empty">Your agent's response will appear here.</div>
-  <div class="section">
-   <h3>Research Sources</h3>
-   <div id="sources" class="notice">Sources will appear here when returned by the backend.</div>
+
+  <h3 class="section-title">G6 MASTER Modules</h3>
+  <div class="grid">
+    <div class="card"><div class="agent-icon">🧠</div><h3>Intelligence Core</h3><p>AI reasoning and task processing foundation.</p></div>
+    <div class="card"><div class="agent-icon">◉</div><h3>Shared Brain</h3><p>Database-backed shared memory foundation.</p></div>
+    <div class="card"><div class="agent-icon">✧</div><h3>Advanced Agents</h3><p>Six specialized agent roles.</p></div>
+    <div class="card"><div class="agent-icon">⚙</div><h3>Automation Engine</h3><p>Workflow execution foundation.</p></div>
+    <div class="card"><div class="agent-icon">🎬</div><h3>Video Production</h3><p>Video production interface and future rendering integration.</p></div>
+    <div class="card"><div class="agent-icon">🌐</div><h3>Global Platform</h3><p>Foundation for future accounts, security and global access.</p></div>
   </div>
- </div>
- <div class="section card hidden" id="workflowResults">
-  <h3>Workflow Results</h3>
-  <div id="workflowOutput"></div>
- </div>
 </section>
 
-<section id="history" class="page hidden">
- <div class="section-head">
-  <h2>Task History</h2>
-  <button class="btn secondary" onclick="loadHistory()">Refresh</button>
- </div>
- <div class="card" id="historyList">Loading history...</div>
-</section>
-
-<section id="video" class="page hidden">
- <div class="card">
-  <h2>Video Studio</h2>
-  <p>Video production workspace — planned G6 module.</p>
-  <div class="section">
-   <h3>Planned capabilities</h3>
-   <p>Script generation · Scene planning · Voiceover · Subtitles · Timeline editing · MP4 rendering</p>
+<!-- AGENTS -->
+<section class="page" id="agents">
+  <div class="hero">
+    <div class="eyebrow">ADVANCED AGENT NETWORK</div>
+    <h2>Six Specialized Agents</h2>
+    <p>Select an agent to send it a task through the connected backend.</p>
   </div>
-  <p class="notice">Video generation and MP4 export are not connected yet. This panel does not claim to render videos.</p>
- </div>
+  <div class="grid" id="agentCards"></div>
 </section>
 
-<section id="settings" class="page hidden">
- <div class="card">
-  <h2>System Settings</h2>
-  <label>Backend API</label>
-  <input id="apiInput" value="https://agagent-ai-api.mom532948.workers.dev">
-  <div class="actions">
-   <button class="btn" onclick="saveApi()">Save API Address</button>
-   <button class="btn secondary" onclick="checkHealth()">Test Connection</button>
+<!-- WORKSPACE -->
+<section class="page" id="workspace">
+  <div class="hero">
+    <div class="eyebrow">INTELLIGENT WORKSPACE</div>
+    <h2>Execute Your Tasks</h2>
+    <p>Send a task to one agent or run the six-agent workflow.</p>
   </div>
-  <p class="notice">This interface currently uses the configured public backend. Do not place API secrets in this page.</p>
- </div>
+
+  <div class="panel">
+    <div class="field">
+      <label for="taskInput">Describe your task</label>
+      <textarea id="taskInput" placeholder="Example: Research the market for AI video editing services and create a business launch strategy..."></textarea>
+    </div>
+    <div class="field">
+      <label for="agentSelect">Choose an AI agent</label>
+      <select id="agentSelect">
+        <option value="manager">Manager Agent</option>
+        <option value="research">Research Agent</option>
+        <option value="production">Production Agent</option>
+        <option value="editing">Editing Agent</option>
+        <option value="content">Content Agent</option>
+        <option value="automation">Automation Agent</option>
+      </select>
+    </div>
+    <div class="actions">
+      <button class="btn primary" id="runBtn" onclick="runAgent()">Run Selected Agent</button>
+      <button class="btn" id="workflowBtn" onclick="runWorkflow()">Run Full G6 Workflow</button>
+    </div>
+    <p class="muted" id="executionStatus">Ready for a new task.</p>
+  </div>
+
+  <div class="panel">
+    <h3>Execution Output</h3>
+    <div class="output" id="output">Your results will appear here.</div>
+  </div>
+
+  <div class="panel hidden" id="workflowResults">
+    <h3>Agent Results</h3>
+    <div id="workflowOutput"></div>
+  </div>
+
+  <div class="panel hidden" id="sourcesPanel">
+    <h3>Research Sources</h3>
+    <div class="source-list" id="sourcesList"></div>
+  </div>
 </section>
 
-<footer>AGAGENT AI · G6 MASTER INTERFACE · Built for the future</footer>
+<!-- HISTORY -->
+<section class="page" id="history">
+  <div class="hero">
+    <div class="eyebrow">TASK RECORDS</div>
+    <h2>Task History</h2>
+    <p>View task records returned by the backend database.</p>
+    <button class="btn primary" onclick="loadHistory()">Refresh History</button>
+  </div>
+  <div id="historyOutput" class="panel">
+    <p class="muted">Press Refresh History to load records.</p>
+  </div>
+</section>
+
+<!-- VIDEO -->
+<section class="page" id="video">
+  <div class="hero">
+    <div class="eyebrow">VIDEO PRODUCTION ENGINE</div>
+    <h2>Video Studio</h2>
+    <p>The G6 video production workspace foundation.</p>
+  </div>
+  <div class="notice">
+    Video rendering, voice generation, subtitle generation and MP4 export are not connected yet. This page is an interface foundation, not a functioning video editor.
+  </div>
+  <div class="panel" style="margin-top:17px">
+    <h3>Production Brief</h3>
+    <div class="field">
+      <label for="videoBrief">Describe the video you want to produce</label>
+      <textarea id="videoBrief" placeholder="Describe the video topic, audience, duration, language and style..."></textarea>
+    </div>
+    <div class="field">
+      <label for="videoLanguage">Video language</label>
+      <select id="videoLanguage">
+        <option>English</option>
+        <option>Turkish</option>
+        <option>Azerbaijani</option>
+        <option>Arabic</option>
+        <option>Spanish</option>
+        <option>Other</option>
+      </select>
+    </div>
+    <button class="btn primary" onclick="sendVideoBrief()">Send Brief to Production Agent</button>
+    <p class="muted">This sends a text task to the existing AI backend. It does not render a video.</p>
+  </div>
+</section>
+
+<!-- SHARED BRAIN -->
+<section class="page" id="brain">
+  <div class="hero">
+    <div class="eyebrow">SHARED MEMORY FOUNDATION</div>
+    <h2>Shared Brain</h2>
+    <p>Shared knowledge and memory infrastructure for the AGAGENT AI agent network.</p>
+  </div>
+  <div class="grid">
+    <div class="card"><h3>Database</h3><div class="stat">D1</div><p>Cloudflare D1 database binding is part of the backend foundation.</p></div>
+    <div class="card"><h3>Research Memory</h3><div class="stat">Ready</div><p>Research memory storage is implemented in the backend foundation.</p></div>
+    <div class="card"><h3>Shared Context</h3><div class="stat">Workflow</div><p>Shared research context is passed through the current workflow.</p></div>
+  </div>
+  <div class="notice" style="margin-top:17px">
+    A dedicated memory search, retrieval and management interface is not yet connected. The cards above describe backend foundations, not a complete memory-management system.
+  </div>
+</section>
+
+<!-- AUTOMATION -->
+<section class="page" id="automation">
+  <div class="hero">
+    <div class="eyebrow">AUTOMATION ENGINE</div>
+    <h2>Workflow Control</h2>
+    <p>Run the current six-agent workflow from one task.</p>
+    <button class="btn primary" onclick="showPage('workspace')">Open Workflow Workspace</button>
+  </div>
+  <div class="panel">
+    <h3>Current Workflow</h3>
+    <ol class="muted" style="line-height:2">
+      <li>Receive user task</li>
+      <li>Perform shared research</li>
+      <li>Send context to six specialized agents</li>
+      <li>Collect agent outputs</li>
+      <li>Display results in the workspace</li>
+    </ol>
+  </div>
+  <div class="notice">
+    Scheduled background jobs, external app actions and autonomous long-running execution are not yet implemented in this interface.
+  </div>
+</section>
+
+<!-- SETTINGS -->
+<section class="page" id="settings">
+  <div class="hero">
+    <div class="eyebrow">SYSTEM CONFIGURATION</div>
+    <h2>Settings</h2>
+    <p>Configure the connection to the AGAGENT AI backend.</p>
+  </div>
+  <div class="panel">
+    <div class="field">
+      <label for="backendUrl">Cloudflare Worker API URL</label>
+      <input id="backendUrl" type="url" placeholder="https://your-worker.workers.dev">
+    </div>
+    <div class="actions">
+      <button class="btn primary" onclick="saveSettings()">Save Backend URL</button>
+      <button class="btn secondary" onclick="checkBackend()">Test Connection</button>
+    </div>
+    <p class="muted" id="settingsStatus"></p>
+  </div>
+  <div class="notice">
+    Never place API keys or private secrets in this frontend. Keep secrets in Cloudflare Worker environment variables.
+  </div>
+</section>
+
+<footer>AGAGENT AI · G6 MASTER · SYSTEM FOUNDATION</footer>
 </main>
 </div>
 
 <script>
-const DEFAULT_API="https://agagent-ai-api.mom532948.workers.dev";
-let API=localStorage.getItem("agagent_api")||DEFAULT_API;
+"use strict";
 
-const AGENTS=[
- {id:"manager",name:"AI Manager",icon:"◈",desc:"Plans tasks and coordinates the agent network."},
- {id:"research",name:"Research AI",icon:"⌕",desc:"Researches topics and returns source references."},
- {id:"production",name:"Production AI",icon:"▣",desc:"Creates scripts, concepts and production plans."},
- {id:"editing",name:"Editing AI",icon:"✂",desc:"Plans cuts, pacing, subtitles and audio."},
- {id:"content",name:"Content AI",icon:"✧",desc:"Creates titles, descriptions and platform content."},
- {id:"automation",name:"Automation AI",icon:"⟳",desc:"Designs workflows and automation processes."}
+const DEFAULT_API = "https://agagent-ai-api.mom532948.workers.dev";
+
+const AGENTS = [
+ {id:"manager",name:"Manager Agent",icon:"🧠",description:"Coordinates tasks and organizes the agent workflow."},
+ {id:"research",name:"Research Agent",icon:"🔎",description:"Researches topics and gathers useful information."},
+ {id:"production",name:"Production Agent",icon:"🏗️",description:"Develops production plans and structured deliverables."},
+ {id:"editing",name:"Editing Agent",icon:"✂️",description:"Plans editing, structure and visual improvements."},
+ {id:"content",name:"Content Agent",icon:"✍️",description:"Creates content concepts, scripts and publishing material."},
+ {id:"automation",name:"Automation Agent",icon:"⚙️",description:"Plans workflows and automation processes."}
 ];
 
-function agentCard(a){
- return `<div class="agent" onclick="selectAgent('${a.id}')">
- <div class="symbol">${a.icon}</div><strong>${a.name}</strong><small>${a.desc}</small></div>`;
-}
-document.getElementById("dashboardAgents").innerHTML=AGENTS.map(agentCard).join("");
-document.getElementById("allAgents").innerHTML=AGENTS.map(agentCard).join("");
-document.getElementById("apiInput").value=API;
+const $ = id => document.getElementById(id);
 
-function selectAgent(id){
- document.getElementById("agentSelect").value=id;
- showPage("workspace");
+let busy = false;
+
+function getApiUrl(){
+ const saved = localStorage.getItem("agagent_api_url");
+ return (saved || DEFAULT_API).replace(/\/+$/,"");
 }
 
 function showPage(page){
- document.querySelectorAll(".page").forEach(x=>x.classList.add("hidden"));
- document.getElementById(page).classList.remove("hidden");
- document.querySelectorAll(".nav button").forEach(x=>x.classList.toggle("active",x.dataset.page===page));
- const titles={dashboard:"Command Center",agents:"AI Agent Network",workspace:"Agent Workspace",history:"Task History",video:"Video Studio",settings:"System Settings"};
- document.getElementById("pageTitle").textContent=titles[page]||"AGAGENT AI";
+ document.querySelectorAll(".page").forEach(el=>el.classList.remove("active"));
+ const target = $(page);
+ if(!target)return;
+ target.classList.add("active");
+
+ document.querySelectorAll(".nav button").forEach(btn=>{
+  btn.classList.toggle("active",btn.dataset.page===page);
+ });
+
+ const titles = {
+  dashboard:"Dashboard",
+  agents:"AI Agents",
+  workspace:"Workspace",
+  history:"Task History",
+  video:"Video Studio",
+  brain:"Shared Brain",
+  automation:"Automation Engine",
+  settings:"Settings"
+ };
+ $("pageTitle").textContent=titles[page]||"AGAGENT AI";
  if(page==="history")loadHistory();
 }
-document.querySelectorAll(".nav button").forEach(b=>b.addEventListener("click",()=>showPage(b.dataset.page)));
+
+document.querySelectorAll(".nav button").forEach(btn=>{
+ btn.addEventListener("click",()=>showPage(btn.dataset.page));
+});
+
+function renderAgents(){
+ const container=$("agentCards");
+ container.replaceChildren();
+
+ AGENTS.forEach(agent=>{
+  const card=document.createElement("div");
+  card.className="card agent-card";
+
+  const icon=document.createElement("div");
+  icon.className="agent-icon";
+  icon.textContent=agent.icon;
+
+  const title=document.createElement("h3");
+  title.textContent=agent.name;
+
+  const description=document.createElement("p");
+  description.textContent=agent.description;
+
+  const status=document.createElement("div");
+  status.className="status";
+  status.textContent="REGISTERED AGENT";
+
+  const button=document.createElement("button");
+  button.className="btn secondary";
+  button.style.marginTop="13px";
+  button.textContent="Select Agent";
+  button.addEventListener("click",()=>{
+   $("agentSelect").value=agent.id;
+   showPage("workspace");
+  });
+
+  card.append(icon,title,description,status,button);
+  container.appendChild(card);
+ });
+}
+
+function setBusy(value){
+ busy=value;
+ $("runBtn").disabled=value;
+ $("workflowBtn").disabled=value;
+}
 
 async function api(path,options={}){
- const response=await fetch(API+path,{
+ const response=await fetch(getApiUrl()+path,{
   ...options,
-  headers:{"Content-Type":"application/json",...(options.headers||{})}
+  headers:{
+   "Content-Type":"application/json",
+   ...(options.headers||{})
+  }
  });
- const data=await response.json().catch(()=>({error:"Server returned invalid JSON."}));
- if(!response.ok||data.ok===false)throw new Error(data.error||"Request failed: "+response.status);
+
+ const text=await response.text();
+ let data={};
+
+ try{data=text?JSON.parse(text):{};}
+ catch{data={message:text};}
+
+ if(!response.ok){
+  throw new Error(data.error||data.message||"HTTP "+response.status);
+ }
+
  return data;
 }
 
-async function checkHealth(){
- const top=document.getElementById("topStatus");
- top.innerHTML='<span class="dot"></span>Checking';
- try{
-  const d=await api("/health");
-  const ok=d.ok&&d.aiBinding&&d.databaseBinding&&d.researchConfigured;
-  top.innerHTML='<span class="dot '+(d.ok?'online':'')+'"></span>'+(d.ok?"Backend Online":"Backend Issue");
-  document.getElementById("sideStatus").innerHTML='<span class="dot '+(d.ok?'online':'')+'"></span>'+(d.ok?"Backend Online":"Backend Issue");
-  document.getElementById("systemMetric").textContent=d.ok?"ONLINE":"ISSUE";
-  document.getElementById("healthDetails").textContent=
-   "Version: "+d.version+" | AI: "+d.aiBinding+" | Database: "+d.databaseBinding+" | Research: "+d.researchConfigured+" | Agents: "+(d.agents||[]).length;
- }catch(e){
-  top.innerHTML='<span class="dot"></span>Offline';
-  document.getElementById("sideStatus").innerHTML='<span class="dot"></span>Backend Offline';
-  document.getElementById("systemMetric").textContent="OFFLINE";
-  document.getElementById("healthDetails").textContent=e.message;
- }
-}
-
-function setBusy(busy){
- document.getElementById("runBtn").disabled=busy;
- document.getElementById("workflowBtn").disabled=busy;
- document.getElementById("executionStatus").innerHTML=busy?'<span class="loader">AGENT EXECUTING...</span>':"";
+function displayOutput(value){
+ if(typeof value==="string")return value;
+ try{return JSON.stringify(value,null,2);}
+ catch{return String(value);}
 }
 
 function renderSources(sources){
- const box=document.getElementById("sources");
- box.replaceChildren();
- if(!Array.isArray(sources)||!sources.length){
-  box.textContent="No source links were returned by the backend.";
+ const panel=$("sourcesPanel");
+ const list=$("sourcesList");
+ list.replaceChildren();
+
+ if(!Array.isArray(sources)||sources.length===0){
+  panel.classList.add("hidden");
   return;
  }
- sources.forEach(s=>{
-  const a=document.createElement("a");
-  a.className="source";
-  a.href=s.url||"#";
-  a.target="_blank";
-  a.rel="noopener noreferrer";
-  a.textContent=(s.title||"Research source")+" — "+(s.published_date||"Date unavailable");
-  box.appendChild(a);
+
+ sources.forEach(source=>{
+  const item=document.createElement("div");
+  const title=source.title||source.name||source.url||"Research source";
+  const url=source.url||source.link;
+
+  if(url){
+   const link=document.createElement("a");
+   link.href=url;
+   link.target="_blank";
+   link.rel="noopener noreferrer";
+   link.textContent=title;
+   item.appendChild(link);
+  }else{
+   const name=document.createElement("strong");
+   name.textContent=title;
+   item.appendChild(name);
+  }
+
+  if(source.content||source.snippet){
+   const description=document.createElement("p");
+   description.className="muted";
+   description.textContent=source.content||source.snippet;
+   item.appendChild(description);
+  }
+
+  list.appendChild(item);
  });
+
+ panel.classList.remove("hidden");
 }
 
 async function runAgent(){
- const task=document.getElementById("taskInput").value.trim();
- const agent=document.getElementById("agentSelect").value;
- if(!task){alert("Please enter a task.");return;}
+ if(busy)return;
+
+ const task=$("taskInput").value.trim();
+ const agent=$("agentSelect").value;
+
+ if(!task){
+  alert("Please enter a task first.");
+  return;
+ }
+
  setBusy(true);
- document.getElementById("executionStatus").textContent="Sending task to "+agent+"...";
- document.getElementById("output").textContent="Generating response...";
- document.getElementById("output").classList.remove("empty");
- document.getElementById("sources").textContent="Waiting for source data...";
- document.getElementById("workflowResults").classList.add("hidden");
+ $("executionStatus").textContent="Agent is processing your task...";
+ $("output").textContent="Waiting for backend response...";
+ $("workflowResults").classList.add("hidden");
+ $("sourcesPanel").classList.add("hidden");
+
  try{
-  const d=await api("/api/agent",{method:"POST",body:JSON.stringify({agent,task})});
-  document.getElementById("output").textContent=d.output||"No output returned.";
-  document.getElementById("outputAgent").textContent=agent.toUpperCase();
-  document.getElementById("executionStatus").textContent="Task completed.";
-  renderSources(d.sources);
- }catch(e){
-  document.getElementById("output").textContent="Error: "+e.message;
-  document.getElementById("executionStatus").textContent="Task failed.";
- }finally{setBusy(false);}
+  const data=await api("/api/agent",{
+   method:"POST",
+   body:JSON.stringify({agent,task})
+  });
+
+  $("output").textContent=displayOutput(data.output??data.result??data);
+  renderSources(data.sources||data.sharedResearch?.results||[]);
+  $("executionStatus").textContent="Agent response received.";
+ }catch(error){
+  $("output").textContent="ERROR: "+error.message;
+  $("executionStatus").textContent="Agent request failed.";
+ }finally{
+  setBusy(false);
+ }
 }
 
 async function runWorkflow(){
- const task=document.getElementById("taskInput").value.trim();
- if(!task){alert("Please enter a task.");return;}
+ if(busy)return;
+
+ const task=$("taskInput").value.trim();
+
+ if(!task){
+  alert("Please enter a task first.");
+  return;
+ }
+
  setBusy(true);
- document.getElementById("executionStatus").textContent="Running six agents. Please wait...";
- document.getElementById("output").textContent="Full workflow is running...";
- document.getElementById("workflowResults").classList.add("hidden");
+ $("executionStatus").textContent="Running six-agent workflow...";
+ $("output").textContent="The workflow is running. Please wait...";
+ $("workflowResults").classList.add("hidden");
+ $("sourcesPanel").classList.add("hidden");
+
  try{
-  const d=await api("/api/workflow",{method:"POST",body:JSON.stringify({task})});
-  const box=document.getElementById("workflowOutput");
+  const data=await api("/api/workflow",{
+   method:"POST",
+   body:JSON.stringify({task})
+  });
+
+  const box=$("workflowOutput");
   box.replaceChildren();
-  Object.entries(d.results||{}).forEach(([name,value])=>{
+
+  const results=Array.isArray(data.results)
+   ?data.results
+   :Object.values(data.results||{});
+
+  results.forEach(item=>{
    const section=document.createElement("div");
-   section.className="history-item";
-   const heading=document.createElement("strong");
-   heading.textContent=name.toUpperCase();
+   section.className="result-card";
+
+   const heading=document.createElement("h4");
+   heading.textContent=(item.name||item.agent||"AI AGENT").toUpperCase();
+
+   const status=document.createElement("small");
+   status.textContent="Status: "+(item.status||"unknown");
+
    const content=document.createElement("p");
-   content.className="result";
-   content.textContent=value;
-   section.append(heading,content);
+   content.textContent=displayOutput(item.output??item.error??item);
+
+   section.append(heading,status,content);
    box.appendChild(section);
   });
-  document.getElementById("workflowResults").classList.remove("hidden");
-  document.getElementById("output").textContent="Workflow completed. See all six agent results below.";
-  renderSources(d.sharedResearch?.results||[]);
-  document.getElementById("executionStatus").textContent="Workflow completed.";
- }catch(e){
-  document.getElementById("output").textContent="Workflow error: "+e.message;
-  document.getElementById("executionStatus").textContent="Workflow failed or timed out.";
- }finally{setBusy(false);}
+
+  $("workflowResults").classList.remove("hidden");
+
+  $("output").textContent=
+   "Workflow finished: "+
+   (data.completed??results.length)+
+   " of "+
+   (data.total??6)+
+   " agents completed.";
+
+  renderSources(data.sharedResearch?.results||data.sources||[]);
+
+  $("executionStatus").textContent=
+   data.workflowStatus==="partial"
+    ?"Workflow partially completed."
+    :"Workflow response received.";
+
+ }catch(error){
+  $("output").textContent="WORKFLOW ERROR: "+error.message;
+  $("executionStatus").textContent="Workflow failed or timed out.";
+ }finally{
+  setBusy(false);
+ }
 }
 
 async function loadHistory(){
- const box=document.getElementById("historyList");
- box.textContent="Loading history...";
+ const box=$("historyOutput");
+ box.textContent="Loading task history...";
+
  try{
-  const d=await api("/api/history");
+  const data=await api("/api/history");
+  const records=Array.isArray(data)?data:
+   (data.history||data.tasks||data.results||[]);
+
   box.replaceChildren();
-  if(!d.history?.length){box.textContent="No saved tasks yet.";return;}
-  d.history.forEach(item=>{
-   const div=document.createElement("div");
-   div.className="history-item";
-   const title=document.createElement("strong");
-   title.textContent=(item.agent||"Agent").toUpperCase()+" — "+(item.status||"");
+
+  if(!records.length){
+   box.textContent="No task records returned by the backend.";
+   return;
+  }
+
+  records.forEach(record=>{
+   const item=document.createElement("div");
+   item.className="result-card";
+
+   const title=document.createElement("h4");
+   title.textContent=record.agent||record.name||"Task";
+
+   const status=document.createElement("small");
+   status.textContent="Status: "+(record.status||"unknown");
+
    const task=document.createElement("p");
-   task.textContent=item.task||"";
-   const date=document.createElement("small");
-   date.textContent=item.created_at||"";
-   div.append(title,task,date);
-   box.appendChild(div);
+   task.textContent="Task: "+(record.task||"Not specified");
+
+   const result=document.createElement("p");
+   result.textContent="Result: "+displayOutput(record.result||record.output||"No result");
+
+   item.append(title,status,task,result);
+   box.appendChild(item);
   });
- }catch(e){box.textContent="History unavailable: "+e.message;}
+ }catch(error){
+  box.textContent="History error: "+error.message;
+ }
 }
 
-function saveApi(){
- const value=document.getElementById("apiInput").value.trim().replace(/\/+$/,"");
- if(!value.startsWith("https://")){alert("Please enter a valid HTTPS backend URL.");return;}
- API=value;
- localStorage.setItem("agagent_api",API);
- alert("Backend address saved.");
- checkHealth();
+function sendVideoBrief(){
+ const brief=$("videoBrief").value.trim();
+ const language=$("videoLanguage").value;
+
+ if(!brief){
+  alert("Please describe your video first.");
+  return;
+ }
+
+ $("taskInput").value=
+  "Create a detailed video production plan. Language: "+
+  language+". Video brief: "+brief;
+
+ $("agentSelect").value="production";
+ showPage("workspace");
+ $("executionStatus").textContent="Video brief prepared for the Production Agent.";
 }
 
-checkHealth();
+function saveSettings(){
+ const input=$("backendUrl").value.trim();
+
+ if(!input){
+  alert("Enter a backend URL.");
+  return;
+ }
+
+ try{
+  const parsed=new URL(input);
+  if(parsed.protocol!=="https:"){
+   alert("Use an HTTPS URL.");
+   return;
+  }
+  localStorage.setItem("agagent_api_url",parsed.origin+parsed.pathname.replace(/\/+$/,""));
+  $("settingsStatus").textContent="Backend URL saved on this device.";
+  checkBackend();
+ }catch{
+  alert("Please enter a valid URL.");
+ }
+}
+
+async function checkBackend(){
+ $("connectionText").textContent="Checking backend...";
+ $("connectionDot").classList.remove("online");
+ $("dashBackend").textContent="CHECKING";
+
+ try{
+  const data=await api("/health");
+  if(data.ok!==true)throw new Error("Backend did not report healthy status.");
+
+  $("connectionText").textContent="Backend Connected";
+  $("connectionDot").classList.add("online");
+  $("backendVersion").textContent="Version: "+(data.version||"Unknown");
+  $("dashBackend").textContent="ONLINE";
+  $("settingsStatus").textContent=
+   "Connection successful. Backend: "+(data.version||"Unknown");
+ }catch(error){
+  $("connectionText").textContent="Backend Offline";
+  $("connectionDot").classList.remove("online");
+  $("dashBackend").textContent="OFFLINE";
+  $("settingsStatus").textContent="Connection failed: "+error.message;
+ }
+}
+
+function initialize(){
+ renderAgents();
+ $("backendUrl").value=getApiUrl();
+ checkBackend();
+}
+
+initialize();
 </script>
 </body>
 </html>
-
