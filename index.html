@@ -1,833 +1,424 @@
 
 <!DOCTYPE html>
-<html lang="az">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AGAGENT AI | G2.0 Control Center</title>
+<meta name="theme-color" content="#080b16">
+<title>AGAGENT AI | G6 MASTER</title>
 <style>
-:root{color-scheme:dark}
+:root{
+  --bg:#080b16;--panel:#111729;--panel2:#151e33;
+  --line:#25314b;--cyan:#36e4ff;--purple:#9b75ff;
+  --text:#edf3ff;--muted:#8b9ab6;--green:#43e6a0;
+  --red:#ff647c;
+}
 *{box-sizing:border-box}
-body{margin:0;background:#080d18;color:#edf2ff;font-family:Arial,sans-serif}
-header{padding:22px;background:#111a2b;border-bottom:1px solid #26344d}
-header h1{margin:0;color:#55b8ff}
-header p{color:#91a4c2;margin-bottom:0}
-main{padding:18px;max-width:1100px;margin:auto}
-h2{margin-top:28px}
-.stats,.agents{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:12px}
-.card{background:#131e31;border:1px solid #263b59;border-radius:12px;padding:17px;margin-bottom:12px}
-.number{font-size:25px;font-weight:bold;color:#55b8ff}
-button{background:#1689df;color:white;border:0;padding:12px 16px;border-radius:8px;font-weight:bold;cursor:pointer;margin:4px}
-button:disabled{opacity:.5;cursor:not-allowed}
-button:hover:not(:disabled){background:#0871bd}
-button.secondary{background:#33445f}
-button.run{background:#16a085;width:100%;margin-top:10px}
-.status{font-size:13px;color:#65e6a0}
-.small{color:#91a4c2;font-size:13px;line-height:1.5}
-input,select{width:100%;padding:13px;margin:7px 0 12px;border-radius:8px;border:1px solid #344967;background:#0b1424;color:#edf2ff}
-label{display:block;color:#b8c8df;font-size:14px}
-#result{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.65;color:#dce8fa;min-height:70px}
-.log{color:#9eb0ca;font-size:13px;line-height:1.7}
-.agent-title{font-size:16px}
-.pill{display:inline-block;padding:5px 9px;border-radius:20px;background:#173b35;color:#77e5b2;font-size:12px}
-footer{text-align:center;padding:30px;color:#7586a2}
-a{color:#55b8ff;overflow-wrap:anywhere}
+body{
+ margin:0;background:radial-gradient(circle at 80% 0%,#192044 0,transparent 35%),var(--bg);
+ color:var(--text);font-family:Inter,Arial,sans-serif;min-height:100vh
+}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+.layout{display:flex;min-height:100vh}
+.sidebar{
+ width:245px;background:#0c1120;border-right:1px solid var(--line);
+ padding:24px 16px;display:flex;flex-direction:column;gap:24px
+}
+.logo{font-size:21px;font-weight:900;letter-spacing:1px}
+.logo span{color:var(--cyan)}
+.version{color:var(--purple);font-size:11px;margin-top:6px;letter-spacing:2px}
+.nav-title{font-size:10px;color:var(--muted);letter-spacing:2px;margin:12px 10px}
+.nav button{
+ display:flex;gap:12px;align-items:center;width:100%;border:0;
+ background:transparent;color:var(--muted);padding:12px;border-radius:10px;
+ text-align:left;margin:3px 0
+}
+.nav button:hover,.nav button.active{background:#18233a;color:var(--cyan)}
+.side-status{margin-top:auto;padding:14px;border:1px solid var(--line);border-radius:12px}
+.main{flex:1;min-width:0;padding:25px}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:28px}
+.topbar h1{font-size:24px;margin:0}
+.topbar p{font-size:12px;color:var(--muted);margin:6px 0}
+.status{font-size:12px;color:var(--muted)}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--red);margin-right:7px}
+.dot.online{background:var(--green);box-shadow:0 0 12px var(--green)}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}
+.card{
+ background:linear-gradient(145deg,#151e33,#101728);
+ border:1px solid var(--line);border-radius:15px;padding:18px;
+ box-shadow:0 8px 30px #0002
+}
+.card h3{margin:0 0 8px;font-size:14px}
+.card p{margin:0;color:var(--muted);font-size:12px;line-height:1.6}
+.metric{font-size:27px;font-weight:800;color:var(--cyan);margin-top:12px}
+.section{margin-top:25px}
+.section-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:13px}
+.section-head h2{font-size:17px;margin:0}
+.agents{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.agent{
+ background:#111a2d;border:1px solid var(--line);border-radius:13px;
+ padding:15px;cursor:pointer;transition:.2s
+}
+.agent:hover,.agent.selected{border-color:var(--cyan);transform:translateY(-2px)}
+.agent .symbol{font-size:23px;margin-bottom:10px}
+.agent strong{display:block;font-size:13px}
+.agent small{display:block;color:var(--muted);margin-top:6px;line-height:1.5}
+.workspace{display:grid;grid-template-columns:1.3fr .7fr;gap:15px}
+textarea,input,select{
+ width:100%;background:#090f1e;color:var(--text);
+ border:1px solid var(--line);border-radius:10px;padding:13px;outline:none
+}
+textarea{min-height:125px;resize:vertical;line-height:1.5}
+textarea:focus,input:focus,select:focus{border-color:var(--cyan)}
+label{display:block;color:var(--muted);font-size:12px;margin:14px 0 7px}
+.btn{
+ background:linear-gradient(90deg,#14bcd8,#8260f5);
+ border:0;border-radius:10px;color:white;padding:12px 17px;font-weight:700
+}
+.btn:disabled{opacity:.5;cursor:wait}
+.btn.secondary{background:#202b44;border:1px solid var(--line)}
+.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:13px}
+.result{
+ white-space:pre-wrap;line-height:1.7;color:#dce7fa;font-size:13px;
+ overflow-wrap:anywhere
+}
+.result.empty{color:var(--muted)}
+.source{
+ display:block;padding:12px;border:1px solid var(--line);
+ border-radius:9px;margin-top:9px;color:var(--cyan);
+ text-decoration:none;font-size:12px;overflow-wrap:anywhere
+}
+.source:hover{background:#18233a}
+.history-item{padding:12px 0;border-bottom:1px solid var(--line);font-size:12px}
+.history-item small{display:block;color:var(--muted);margin-top:5px}
+.hidden{display:none!important}
+.notice{font-size:12px;color:var(--muted);line-height:1.6}
+.loader{color:var(--cyan);animation:pulse 1s infinite}
+@keyframes pulse{50%{opacity:.35}}
+footer{color:var(--muted);font-size:11px;text-align:center;padding:25px}
+@media(max-width:900px){
+ .sidebar{width:190px}.grid{grid-template-columns:repeat(2,1fr)}
+ .agents{grid-template-columns:repeat(2,1fr)}
+ .workspace{grid-template-columns:1fr}
+}
+@media(max-width:620px){
+ .layout{display:block}.sidebar{width:100%;padding:15px;border-right:0;border-bottom:1px solid var(--line)}
+ .nav{display:flex;overflow-x:auto}.nav-title{display:none}
+ .nav button{white-space:nowrap;width:auto;font-size:11px}
+ .side-status{display:none}.main{padding:16px}
+ .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+ .agents{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+ .card{padding:13px}.topbar h1{font-size:19px}
+}
 </style>
 </head>
 <body>
+<div class="layout">
+<aside class="sidebar">
+  <div>
+    <div class="logo">AG<span>AGENT</span> AI</div>
+    <div class="version">G6 MASTER INTERFACE</div>
+  </div>
+  <div class="nav">
+    <div class="nav-title">MAIN SYSTEM</div>
+    <button class="active" data-page="dashboard">◈ Dashboard</button>
+    <button data-page="agents">✧ AI Agents</button>
+    <button data-page="workspace">⌘ Workspace</button>
+    <button data-page="history">◷ Task History</button>
+    <button data-page="video">▶ Video Studio</button>
+    <button data-page="settings">⚙ Settings</button>
+  </div>
+  <div class="side-status">
+    <div style="font-size:11px;color:var(--muted)">SYSTEM STATUS</div>
+    <p id="sideStatus"><span class="dot"></span>Checking backend...</p>
+    <button class="btn secondary" style="width:100%;font-size:11px" onclick="checkHealth()">Refresh</button>
+  </div>
+</aside>
 
-<header>
-<h1>⚡ AGAGENT AI</h1>
-<p>Global AI Agent Control Center · G2.0</p>
-<p><span class="pill" id="connection">Connecting...</span></p>
+<main class="main">
+<header class="topbar">
+ <div>
+  <h1 id="pageTitle">Command Center</h1>
+  <p>Intelligent Agent Operating System</p>
+ </div>
+ <div class="status" id="topStatus"><span class="dot"></span>Connecting</div>
 </header>
 
-<main>
+<section id="dashboard" class="page">
+ <div class="grid">
+  <div class="card"><h3>AI SYSTEM</h3><p>Backend connection</p><div class="metric" id="systemMetric">CHECKING</div></div>
+  <div class="card"><h3>AI AGENTS</h3><p>Registered agents</p><div class="metric">06</div></div>
+  <div class="card"><h3>PLATFORM</h3><p>Current interface</p><div class="metric">G6</div></div>
+ </div>
+ <div class="section">
+  <div class="section-head"><h2>Agent Network</h2><span class="notice">6 registered agents</span></div>
+  <div class="agents" id="dashboardAgents"></div>
+ </div>
+ <div class="section card">
+  <h3>System Overview</h3>
+  <p id="healthDetails">Checking AI, database and research connections...</p>
+ </div>
+</section>
 
-<h2>📊 System Overview</h2>
-<div class="stats">
-<div class="card"><div class="number">6</div>AI Agents</div>
-<div class="card"><div class="number" id="online">0</div>Backend Connections</div>
-<div class="card"><div class="number">G2.0</div>Project Phase</div>
-<div class="card"><div class="number" id="requests">0</div>Requests This Session</div>
-</div>
+<section id="agents" class="page hidden">
+ <div class="section-head"><h2>AI Agent Network</h2></div>
+ <div class="agents" id="allAgents"></div>
+</section>
 
-<h2>🤖 AI Agent Management</h2>
-<div class="agents" id="agents"></div>
+<section id="workspace" class="page hidden">
+ <div class="workspace">
+  <div class="card">
+   <h3>Agent Workspace</h3>
+   <label for="agentSelect">Select AI Agent</label>
+   <select id="agentSelect">
+    <option value="manager">AI Manager</option>
+    <option value="research">Research AI</option>
+    <option value="production">Production AI</option>
+    <option value="editing">Editing AI</option>
+    <option value="content">Content AI</option>
+    <option value="automation">Automation AI</option>
+   </select>
+   <label for="taskInput">Your Task</label>
+   <textarea id="taskInput" maxlength="4000" placeholder="Describe what you want your AI agent to do..."></textarea>
+   <div class="actions">
+    <button class="btn" id="runBtn" onclick="runAgent()">Run Agent</button>
+    <button class="btn secondary" id="workflowBtn" onclick="runWorkflow()">Run Full Workflow</button>
+   </div>
+   <p class="notice">Full Workflow runs all six agents sequentially and may take longer.</p>
+  </div>
+  <div class="card">
+   <h3>Execution Status</h3>
+   <div id="executionStatus" class="result empty">Waiting for a task...</div>
+  </div>
+ </div>
+ <div class="section card">
+  <div class="section-head"><h2>AI Output</h2><span id="outputAgent" class="notice">No output yet</span></div>
+  <div id="output" class="result empty">Your agent's response will appear here.</div>
+  <div class="section">
+   <h3>Research Sources</h3>
+   <div id="sources" class="notice">Sources will appear here when returned by the backend.</div>
+  </div>
+ </div>
+ <div class="section card hidden" id="workflowResults">
+  <h3>Workflow Results</h3>
+  <div id="workflowOutput"></div>
+ </div>
+</section>
 
-<h2>🌍 Production Center</h2>
-<div class="card">
-<p>Tapşırığını istənilən dildə yaz. Agentlər internet araşdırması apararaq həmin dildə nəticə hazırlamağa çalışacaqlar.</p>
+<section id="history" class="page hidden">
+ <div class="section-head">
+  <h2>Task History</h2>
+  <button class="btn secondary" onclick="loadHistory()">Refresh</button>
+ </div>
+ <div class="card" id="historyList">Loading history...</div>
+</section>
 
-<label for="managerTask">Mövzu / Tapşırıq</label>
-<input id="managerTask" type="text" placeholder="Məsələn: Süni intellektin gələcəyi">
+<section id="video" class="page hidden">
+ <div class="card">
+  <h2>Video Studio</h2>
+  <p>Video production workspace — planned G6 module.</p>
+  <div class="section">
+   <h3>Planned capabilities</h3>
+   <p>Script generation · Scene planning · Voiceover · Subtitles · Timeline editing · MP4 rendering</p>
+  </div>
+  <p class="notice">Video generation and MP4 export are not connected yet. This panel does not claim to render videos.</p>
+ </div>
+</section>
 
-<label for="platform">Platforma</label>
-<select id="platform">
-<option>YouTube</option>
-<option>YouTube Shorts</option>
-<option>TikTok</option>
-<option>Instagram Reels</option>
-</select>
+<section id="settings" class="page hidden">
+ <div class="card">
+  <h2>System Settings</h2>
+  <label>Backend API</label>
+  <input id="apiInput" value="https://agagent-ai-api.mom532948.workers.dev">
+  <div class="actions">
+   <button class="btn" onclick="saveApi()">Save API Address</button>
+   <button class="btn secondary" onclick="checkHealth()">Test Connection</button>
+  </div>
+  <p class="notice">This interface currently uses the configured public backend. Do not place API secrets in this page.</p>
+ </div>
+</section>
 
-<button onclick="runAgent('manager')">Manager AI</button>
-<button onclick="runAgent('research')">Research AI</button>
-<button onclick="runAgent('production')">Video Production AI</button>
-<button onclick="runAgent('editing')">Video Editing AI</button>
-<button onclick="runAgent('content')">Content AI</button>
-<button onclick="runAgent('automation')">Automation AI</button>
-
-<button class="run" id="workflowButton" onclick="runFullWorkflow()">🚀 FULL WORKFLOW — BÜTÜN AGENTLƏR</button>
-
-<p class="small">
-G2.0 backend: Cloudflare Workers AI + Tavily Research.
-Hər agent öz sorğusu zamanı internet axtarışı aparır.
-Video render və MP4 ixracı bu versiyada hələ inteqrasiya edilməyib.
-</p>
-</div>
-
-<h2>📋 AI Results</h2>
-<div class="card">
-<div id="result">Tapşırıq gözlənilir...</div>
-</div>
-
-<h2>🔎 Research Sources</h2>
-<div class="card" id="sources">
-Araşdırma mənbələri burada görünəcək.
-</div>
-
-<h2>📜 Activity Log</h2>
-<div class="card log" id="logs">G2.0 Dashboard initialized.</div>
-
+<footer>AGAGENT AI · G6 MASTER INTERFACE · Built for the future</footer>
 </main>
-
-<footer>AGAGENT AI © 2026 | G2.0 Control Center</footer>
+</div>
 
 <script>
-"use strict";
+const DEFAULT_API="https://agagent-ai-api.mom532948.workers.dev";
+let API=localStorage.getItem("agagent_api")||DEFAULT_API;
 
-const API = "https://agagent-ai-api.mom532948.workers.dev";
-
-const AGENTS = [
- {id:"manager",name:"Manager AI",description:"Tapşırıqları idarə edir"},
- {id:"research",name:"Research AI",description:"İnternetdə araşdırma aparır"},
- {id:"production",name:"Video Production AI",description:"Video ssenarisi yaradır"},
- {id:"editing",name:"Video Editing AI",description:"Montaj planı hazırlayır"},
- {id:"content",name:"Content AI",description:"Kontent hazırlayır"},
- {id:"automation",name:"Automation AI",description:"İş prosesini planlaşdırır"}
+const AGENTS=[
+ {id:"manager",name:"AI Manager",icon:"◈",desc:"Plans tasks and coordinates the agent network."},
+ {id:"research",name:"Research AI",icon:"⌕",desc:"Researches topics and returns source references."},
+ {id:"production",name:"Production AI",icon:"▣",desc:"Creates scripts, concepts and production plans."},
+ {id:"editing",name:"Editing AI",icon:"✂",desc:"Plans cuts, pacing, subtitles and audio."},
+ {id:"content",name:"Content AI",icon:"✧",desc:"Creates titles, descriptions and platform content."},
+ {id:"automation",name:"Automation AI",icon:"⟳",desc:"Designs workflows and automation processes."}
 ];
 
-let busy = false;
-let requestCount = 0;
+function agentCard(a){
+ return `<div class="agent" onclick="selectAgent('${a.id}')">
+ <div class="symbol">${a.icon}</div><strong>${a.name}</strong><small>${a.desc}</small></div>`;
+}
+document.getElementById("dashboardAgents").innerHTML=AGENTS.map(agentCard).join("");
+document.getElementById("allAgents").innerHTML=AGENTS.map(agentCard).join("");
+document.getElementById("apiInput").value=API;
 
-const $ = id => document.getElementById(id);
-
-function log(message){
- const logs = $("logs");
- logs.textContent =
- new Date().toLocaleTimeString() + " — " +
- message + "\n" + logs.textContent;
+function selectAgent(id){
+ document.getElementById("agentSelect").value=id;
+ showPage("workspace");
 }
 
-function setBusy(value){
- busy = value;
- document.querySelectorAll("button").forEach(button=>{
-   button.disabled = value;
+function showPage(page){
+ document.querySelectorAll(".page").forEach(x=>x.classList.add("hidden"));
+ document.getElementById(page).classList.remove("hidden");
+ document.querySelectorAll(".nav button").forEach(x=>x.classList.toggle("active",x.dataset.page===page));
+ const titles={dashboard:"Command Center",agents:"AI Agent Network",workspace:"Agent Workspace",history:"Task History",video:"Video Studio",settings:"System Settings"};
+ document.getElementById("pageTitle").textContent=titles[page]||"AGAGENT AI";
+ if(page==="history")loadHistory();
+}
+document.querySelectorAll(".nav button").forEach(b=>b.addEventListener("click",()=>showPage(b.dataset.page)));
+
+async function api(path,options={}){
+ const response=await fetch(API+path,{
+  ...options,
+  headers:{"Content-Type":"application/json",...(options.headers||{})}
  });
- $("workflowButton").textContent =
- value ? "⏳ AGENTLƏR İŞLƏYİR..." :
- "🚀 FULL WORKFLOW — BÜTÜN AGENTLƏR";
-}
-
-function renderAgents(){
- const container = $("agents");
- container.replaceChildren();
-
- AGENTS.forEach(agent=>{
-   const card = document.createElement("div");
-   card.className = "card";
-
-   const title = document.createElement("h3");
-   title.className = "agent-title";
-   title.textContent = "🤖 " + agent.name;
-
-   const description = document.createElement("p");
-   description.className = "small";
-   description.textContent = agent.description;
-
-   const status = document.createElement("p");
-   status.className = "status";
-   status.id = "status-" + agent.id;
-   status.textContent = "● Ready";
-
-   const button = document.createElement("button");
-   button.textContent = "Run Agent";
-   button.addEventListener("click",()=>runAgent(agent.id));
-
-   card.append(title,description,status,button);
-   container.appendChild(card);
- });
-}
-
-function showResult(text){
- $("result").textContent = text;
-}
-
-function showSources(sources){
- const box = $("sources");
- box.replaceChildren();
-
- if(!sources || !sources.length){
-   box.textContent = "Mənbə məlumatı yoxdur.";
-   return;
- }
-
- sources.forEach(source=>{
-   const item = document.createElement("div");
-   item.style.marginBottom = "14px";
-
-   const title = document.createElement("strong");
-   title.textContent =
-     (source.number || "") + ". " + (source.title || "Source");
-
-   const link = document.createElement("div");
-   const a = document.createElement("a");
-   a.href = source.url;
-   a.textContent = source.url;
-   a.target = "_blank";
-   a.rel = "noopener noreferrer";
-   link.appendChild(a);
-
-   const date = document.createElement("p");
-   date.className = "small";
-   date.textContent =
-     "Published: " + (source.published_date || "Unknown");
-
-   item.append(title,link,date);
-   box.appendChild(item);
- });
-}
-
-async function checkBackend(){
- try{
-   const response = await fetch(API + "/health");
-   const data = await response.json();
-
-   if(!response.ok || !data.ok) throw new Error("Backend unavailable");
-
-   $("connection").textContent = "● BACKEND ONLINE";
-   $("online").textContent = "6";
-
-   log("Backend connection successful.");
-   log("Workers AI: " + data.aiBinding);
-   log("Research configured: " + data.researchConfigured);
-
- }catch(error){
-   $("connection").textContent = "● CONNECTION ERROR";
-   $("connection").style.background = "#572b32";
-   $("online").textContent = "0";
-   log("Backend connection failed: " + error.message);
- }
-}
-
-async function requestAgent(agent,task){
- const response = await fetch(API + "/api/agent",{
-   method:"POST",
-   headers:{
-     "Content-Type":"application/json"
-   },
-   body:JSON.stringify({
-     agent,
-     task
-   })
- });
-
- const data = await response.json();
-
- if(!response.ok || !data.ok){
-   throw new Error(data.error || "Agent request failed");
- }
-
- requestCount++;
- $("requests").textContent = requestCount;
-
+ const data=await response.json().catch(()=>({error:"Server returned invalid JSON."}));
+ if(!response.ok||data.ok===false)throw new Error(data.error||"Request failed: "+response.status);
  return data;
 }
 
-function getTask(){
- const task = $("managerTask").value.trim();
-
- if(!task){
-   alert("Zəhmət olmasa tapşırıq daxil et.");
-   return null;
- }
-
- return task;
-}
-
-function buildTask(agent,topic){
- const platform = $("platform").value;
-
- if(["production","editing","content"].includes(agent)){
-   return topic + "\nTarget platform: " + platform;
- }
-
- return topic;
-}
-
-async function runAgent(agent){
- const topic = getTask();
- if(!topic || busy) return;
-
- const item = AGENTS.find(a=>a.id===agent);
- if(!item) return;
-
- setBusy(true);
- showResult(item.name + " işləyir. Araşdırma aparılır...");
- $("status-"+agent).textContent = "● Working...";
- log(item.name + " started.");
-
+async function checkHealth(){
+ const top=document.getElementById("topStatus");
+ top.innerHTML='<span class="dot"></span>Checking';
  try{
-   const data = await requestAgent(
-     agent,
-     buildTask(agent,topic)
-   );
-
-   let output =
-     item.name + "\n\n" +
-     (data.output || "No output returned.");
-
-   if(data.research && data.research.summary){
-     output += "\n\nRESEARCH SUMMARY:\n" +
-       data.research.summary;
-   }
-
-   showResult(output);
-
-   showSources(
-     data.research ? data.research.sources : []
-   );
-
-   $("status-"+agent).textContent = "● Completed";
-   log(item.name + " completed successfully.");
-
- }catch(error){
-   showResult("Xəta: " + error.message);
-   $("status-"+agent).textContent = "● Error";
-   log(item.name + " error: " + error.message);
- }finally{
-   setBusy(false);
+  const d=await api("/health");
+  const ok=d.ok&&d.aiBinding&&d.databaseBinding&&d.researchConfigured;
+  top.innerHTML='<span class="dot '+(d.ok?'online':'')+'"></span>'+(d.ok?"Backend Online":"Backend Issue");
+  document.getElementById("sideStatus").innerHTML='<span class="dot '+(d.ok?'online':'')+'"></span>'+(d.ok?"Backend Online":"Backend Issue");
+  document.getElementById("systemMetric").textContent=d.ok?"ONLINE":"ISSUE";
+  document.getElementById("healthDetails").textContent=
+   "Version: "+d.version+" | AI: "+d.aiBinding+" | Database: "+d.databaseBinding+" | Research: "+d.researchConfigured+" | Agents: "+(d.agents||[]).length;
+ }catch(e){
+  top.innerHTML='<span class="dot"></span>Offline';
+  document.getElementById("sideStatus").innerHTML='<span class="dot"></span>Backend Offline';
+  document.getElementById("systemMetric").textContent="OFFLINE";
+  document.getElementById("healthDetails").textContent=e.message;
  }
 }
 
-async function runFullWorkflow(){
- const topic = getTask();
- if(!topic || busy) return;
-
- const order = [
-   "manager",
-   "research",
-   "production",
-   "editing",
-   "content",
-   "automation"
- ];
-
- setBusy(true);
- showResult("AGAGENT AI G2.0 FULL WORKFLOW başladı...\n");
-
- const results = [];
- let allSources = [];
-
- try{
-   for(const id of order){
-     const agent = AGENTS.find(a=>a.id===id);
-
-     $("status-"+id).textContent = "● Working...";
-
-     showResult(
-       "FULL WORKFLOW\n\n" +
-       agent.name + " işləyir...\n" +
-       "Araşdırma və AI emalı aparılır."
-     );
-
-     log(agent.name + " started.");
-
-     const data = await requestAgent(
-       id,
-       buildTask(id,topic)
-     );
-
-     results.push({
-       name:agent.name,
-       output:data.output || "No output"
-     });
-
-     if(data.research && data.research.sources){
-       allSources = allSources.concat(
-         data.research.sources
-       );
-     }
-
-     $("status-"+id).textContent = "● Completed";
-     log(agent.name + " completed.");
-   }
-
-   let finalText =
-     "AGAGENT AI G2.0 — FULL WORKFLOW\n" +
-     "Mövzu: " + topic + "\n" +
-     "Platforma: " + $("platform").value + "\n\n";
-
-   results.forEach((result,index)=>{
-     finalText +=
-       "\n" + (index+1) + ". " + result.name +
-       "\n\n" + result.output + "\n\n" +
-       "--------------------------------\n";
-   });
-
-   showResult(finalText);
-
-   const uniqueSources = [
-     ...new Map(
-       allSources.map(source=>[source.url,source])
-     ).values()
-   ];
-
-   showSources(uniqueSources);
-
-   log("FULL WORKFLOW completed successfully.");
-
- }catch(error){
-   showResult(
-     "FULL WORKFLOW dayandırıldı.\n\nXəta: " +
-     error.message +
-     "\n\nƏvvəlki agentlərin nəticələri yoxlanıla bilər."
-   );
-   log("Workflow error: " + error.message);
- }finally{
-   setBusy(false);
- }
+function setBusy(busy){
+ document.getElementById("runBtn").disabled=busy;
+ document.getElementById("workflowBtn").disabled=busy;
+ document.getElementById("executionStatus").innerHTML=busy?'<span class="loader">AGENT EXECUTING...</span>':"";
 }
 
-renderAgents();
-checkBackend();
-</script>
-
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="az">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AGAGENT AI | G2.0 Control Center</title>
-<style>
-:root{color-scheme:dark}
-*{box-sizing:border-box}
-body{margin:0;background:#080d18;color:#edf2ff;font-family:Arial,sans-serif}
-header{padding:22px;background:#111a2b;border-bottom:1px solid #26344d}
-header h1{margin:0;color:#55b8ff}
-header p{color:#91a4c2;margin-bottom:0}
-main{padding:18px;max-width:1100px;margin:auto}
-h2{margin-top:28px}
-.stats,.agents{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:12px}
-.card{background:#131e31;border:1px solid #263b59;border-radius:12px;padding:17px;margin-bottom:12px}
-.number{font-size:25px;font-weight:bold;color:#55b8ff}
-button{background:#1689df;color:white;border:0;padding:12px 16px;border-radius:8px;font-weight:bold;cursor:pointer;margin:4px}
-button:disabled{opacity:.5;cursor:not-allowed}
-button:hover:not(:disabled){background:#0871bd}
-button.secondary{background:#33445f}
-button.run{background:#16a085;width:100%;margin-top:10px}
-.status{font-size:13px;color:#65e6a0}
-.small{color:#91a4c2;font-size:13px;line-height:1.5}
-input,select{width:100%;padding:13px;margin:7px 0 12px;border-radius:8px;border:1px solid #344967;background:#0b1424;color:#edf2ff}
-label{display:block;color:#b8c8df;font-size:14px}
-#result{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.65;color:#dce8fa;min-height:70px}
-.log{color:#9eb0ca;font-size:13px;line-height:1.7}
-.agent-title{font-size:16px}
-.pill{display:inline-block;padding:5px 9px;border-radius:20px;background:#173b35;color:#77e5b2;font-size:12px}
-footer{text-align:center;padding:30px;color:#7586a2}
-a{color:#55b8ff;overflow-wrap:anywhere}
-</style>
-</head>
-<body>
-
-<header>
-<h1>⚡ AGAGENT AI</h1>
-<p>Global AI Agent Control Center · G2.0</p>
-<p><span class="pill" id="connection">Connecting...</span></p>
-</header>
-
-<main>
-
-<h2>📊 System Overview</h2>
-<div class="stats">
-<div class="card"><div class="number">6</div>AI Agents</div>
-<div class="card"><div class="number" id="online">0</div>Backend Connections</div>
-<div class="card"><div class="number">G2.0</div>Project Phase</div>
-<div class="card"><div class="number" id="requests">0</div>Requests This Session</div>
-</div>
-
-<h2>🤖 AI Agent Management</h2>
-<div class="agents" id="agents"></div>
-
-<h2>🌍 Production Center</h2>
-<div class="card">
-<p>Tapşırığını istənilən dildə yaz. Agentlər internet araşdırması apararaq həmin dildə nəticə hazırlamağa çalışacaqlar.</p>
-
-<label for="managerTask">Mövzu / Tapşırıq</label>
-<input id="managerTask" type="text" placeholder="Məsələn: Süni intellektin gələcəyi">
-
-<label for="platform">Platforma</label>
-<select id="platform">
-<option>YouTube</option>
-<option>YouTube Shorts</option>
-<option>TikTok</option>
-<option>Instagram Reels</option>
-</select>
-
-<button onclick="runAgent('manager')">Manager AI</button>
-<button onclick="runAgent('research')">Research AI</button>
-<button onclick="runAgent('production')">Video Production AI</button>
-<button onclick="runAgent('editing')">Video Editing AI</button>
-<button onclick="runAgent('content')">Content AI</button>
-<button onclick="runAgent('automation')">Automation AI</button>
-
-<button class="run" id="workflowButton" onclick="runFullWorkflow()">🚀 FULL WORKFLOW — BÜTÜN AGENTLƏR</button>
-
-<p class="small">
-G2.0 backend: Cloudflare Workers AI + Tavily Research.
-Hər agent öz sorğusu zamanı internet axtarışı aparır.
-Video render və MP4 ixracı bu versiyada hələ inteqrasiya edilməyib.
-</p>
-</div>
-
-<h2>📋 AI Results</h2>
-<div class="card">
-<div id="result">Tapşırıq gözlənilir...</div>
-</div>
-
-<h2>🔎 Research Sources</h2>
-<div class="card" id="sources">
-Araşdırma mənbələri burada görünəcək.
-</div>
-
-<h2>📜 Activity Log</h2>
-<div class="card log" id="logs">G2.0 Dashboard initialized.</div>
-
-</main>
-
-<footer>AGAGENT AI © 2026 | G2.0 Control Center</footer>
-
-<script>
-"use strict";
-
-const API = "https://agagent-ai-api.mom532948.workers.dev";
-
-const AGENTS = [
- {id:"manager",name:"Manager AI",description:"Tapşırıqları idarə edir"},
- {id:"research",name:"Research AI",description:"İnternetdə araşdırma aparır"},
- {id:"production",name:"Video Production AI",description:"Video ssenarisi yaradır"},
- {id:"editing",name:"Video Editing AI",description:"Montaj planı hazırlayır"},
- {id:"content",name:"Content AI",description:"Kontent hazırlayır"},
- {id:"automation",name:"Automation AI",description:"İş prosesini planlaşdırır"}
-];
-
-let busy = false;
-let requestCount = 0;
-
-const $ = id => document.getElementById(id);
-
-function log(message){
- const logs = $("logs");
- logs.textContent =
- new Date().toLocaleTimeString() + " — " +
- message + "\n" + logs.textContent;
-}
-
-function setBusy(value){
- busy = value;
- document.querySelectorAll("button").forEach(button=>{
-   button.disabled = value;
- });
- $("workflowButton").textContent =
- value ? "⏳ AGENTLƏR İŞLƏYİR..." :
- "🚀 FULL WORKFLOW — BÜTÜN AGENTLƏR";
-}
-
-function renderAgents(){
- const container = $("agents");
- container.replaceChildren();
-
- AGENTS.forEach(agent=>{
-   const card = document.createElement("div");
-   card.className = "card";
-
-   const title = document.createElement("h3");
-   title.className = "agent-title";
-   title.textContent = "🤖 " + agent.name;
-
-   const description = document.createElement("p");
-   description.className = "small";
-   description.textContent = agent.description;
-
-   const status = document.createElement("p");
-   status.className = "status";
-   status.id = "status-" + agent.id;
-   status.textContent = "● Ready";
-
-   const button = document.createElement("button");
-   button.textContent = "Run Agent";
-   button.addEventListener("click",()=>runAgent(agent.id));
-
-   card.append(title,description,status,button);
-   container.appendChild(card);
- });
-}
-
-function showResult(text){
- $("result").textContent = text;
-}
-
-function showSources(sources){
- const box = $("sources");
+function renderSources(sources){
+ const box=document.getElementById("sources");
  box.replaceChildren();
-
- if(!sources || !sources.length){
-   box.textContent = "Mənbə məlumatı yoxdur.";
-   return;
+ if(!Array.isArray(sources)||!sources.length){
+  box.textContent="No source links were returned by the backend.";
+  return;
  }
-
- sources.forEach(source=>{
-   const item = document.createElement("div");
-   item.style.marginBottom = "14px";
-
-   const title = document.createElement("strong");
-   title.textContent =
-     (source.number || "") + ". " + (source.title || "Source");
-
-   const link = document.createElement("div");
-   const a = document.createElement("a");
-   a.href = source.url;
-   a.textContent = source.url;
-   a.target = "_blank";
-   a.rel = "noopener noreferrer";
-   link.appendChild(a);
-
-   const date = document.createElement("p");
-   date.className = "small";
-   date.textContent =
-     "Published: " + (source.published_date || "Unknown");
-
-   item.append(title,link,date);
-   box.appendChild(item);
+ sources.forEach(s=>{
+  const a=document.createElement("a");
+  a.className="source";
+  a.href=s.url||"#";
+  a.target="_blank";
+  a.rel="noopener noreferrer";
+  a.textContent=(s.title||"Research source")+" — "+(s.published_date||"Date unavailable");
+  box.appendChild(a);
  });
 }
 
-async function checkBackend(){
- try{
-   const response = await fetch(API + "/health");
-   const data = await response.json();
-
-   if(!response.ok || !data.ok) throw new Error("Backend unavailable");
-
-   $("connection").textContent = "● BACKEND ONLINE";
-   $("online").textContent = "6";
-
-   log("Backend connection successful.");
-   log("Workers AI: " + data.aiBinding);
-   log("Research configured: " + data.researchConfigured);
-
- }catch(error){
-   $("connection").textContent = "● CONNECTION ERROR";
-   $("connection").style.background = "#572b32";
-   $("online").textContent = "0";
-   log("Backend connection failed: " + error.message);
- }
-}
-
-async function requestAgent(agent,task){
- const response = await fetch(API + "/api/agent",{
-   method:"POST",
-   headers:{
-     "Content-Type":"application/json"
-   },
-   body:JSON.stringify({
-     agent,
-     task
-   })
- });
-
- const data = await response.json();
-
- if(!response.ok || !data.ok){
-   throw new Error(data.error || "Agent request failed");
- }
-
- requestCount++;
- $("requests").textContent = requestCount;
-
- return data;
-}
-
-function getTask(){
- const task = $("managerTask").value.trim();
-
- if(!task){
-   alert("Zəhmət olmasa tapşırıq daxil et.");
-   return null;
- }
-
- return task;
-}
-
-function buildTask(agent,topic){
- const platform = $("platform").value;
-
- if(["production","editing","content"].includes(agent)){
-   return topic + "\nTarget platform: " + platform;
- }
-
- return topic;
-}
-
-async function runAgent(agent){
- const topic = getTask();
- if(!topic || busy) return;
-
- const item = AGENTS.find(a=>a.id===agent);
- if(!item) return;
-
+async function runAgent(){
+ const task=document.getElementById("taskInput").value.trim();
+ const agent=document.getElementById("agentSelect").value;
+ if(!task){alert("Please enter a task.");return;}
  setBusy(true);
- showResult(item.name + " işləyir. Araşdırma aparılır...");
- $("status-"+agent).textContent = "● Working...";
- log(item.name + " started.");
-
+ document.getElementById("executionStatus").textContent="Sending task to "+agent+"...";
+ document.getElementById("output").textContent="Generating response...";
+ document.getElementById("output").classList.remove("empty");
+ document.getElementById("sources").textContent="Waiting for source data...";
+ document.getElementById("workflowResults").classList.add("hidden");
  try{
-   const data = await requestAgent(
-     agent,
-     buildTask(agent,topic)
-   );
-
-   let output =
-     item.name + "\n\n" +
-     (data.output || "No output returned.");
-
-   if(data.research && data.research.summary){
-     output += "\n\nRESEARCH SUMMARY:\n" +
-       data.research.summary;
-   }
-
-   showResult(output);
-
-   showSources(
-     data.research ? data.research.sources : []
-   );
-
-   $("status-"+agent).textContent = "● Completed";
-   log(item.name + " completed successfully.");
-
- }catch(error){
-   showResult("Xəta: " + error.message);
-   $("status-"+agent).textContent = "● Error";
-   log(item.name + " error: " + error.message);
- }finally{
-   setBusy(false);
- }
+  const d=await api("/api/agent",{method:"POST",body:JSON.stringify({agent,task})});
+  document.getElementById("output").textContent=d.output||"No output returned.";
+  document.getElementById("outputAgent").textContent=agent.toUpperCase();
+  document.getElementById("executionStatus").textContent="Task completed.";
+  renderSources(d.sources);
+ }catch(e){
+  document.getElementById("output").textContent="Error: "+e.message;
+  document.getElementById("executionStatus").textContent="Task failed.";
+ }finally{setBusy(false);}
 }
 
-async function runFullWorkflow(){
- const topic = getTask();
- if(!topic || busy) return;
-
- const order = [
-   "manager",
-   "research",
-   "production",
-   "editing",
-   "content",
-   "automation"
- ];
-
+async function runWorkflow(){
+ const task=document.getElementById("taskInput").value.trim();
+ if(!task){alert("Please enter a task.");return;}
  setBusy(true);
- showResult("AGAGENT AI G2.0 FULL WORKFLOW başladı...\n");
-
- const results = [];
- let allSources = [];
-
+ document.getElementById("executionStatus").textContent="Running six agents. Please wait...";
+ document.getElementById("output").textContent="Full workflow is running...";
+ document.getElementById("workflowResults").classList.add("hidden");
  try{
-   for(const id of order){
-     const agent = AGENTS.find(a=>a.id===id);
-
-     $("status-"+id).textContent = "● Working...";
-
-     showResult(
-       "FULL WORKFLOW\n\n" +
-       agent.name + " işləyir...\n" +
-       "Araşdırma və AI emalı aparılır."
-     );
-
-     log(agent.name + " started.");
-
-     const data = await requestAgent(
-       id,
-       buildTask(id,topic)
-     );
-
-     results.push({
-       name:agent.name,
-       output:data.output || "No output"
-     });
-
-     if(data.research && data.research.sources){
-       allSources = allSources.concat(
-         data.research.sources
-       );
-     }
-
-     $("status-"+id).textContent = "● Completed";
-     log(agent.name + " completed.");
-   }
-
-   let finalText =
-     "AGAGENT AI G2.0 — FULL WORKFLOW\n" +
-     "Mövzu: " + topic + "\n" +
-     "Platforma: " + $("platform").value + "\n\n";
-
-   results.forEach((result,index)=>{
-     finalText +=
-       "\n" + (index+1) + ". " + result.name +
-       "\n\n" + result.output + "\n\n" +
-       "--------------------------------\n";
-   });
-
-   showResult(finalText);
-
-   const uniqueSources = [
-     ...new Map(
-       allSources.map(source=>[source.url,source])
-     ).values()
-   ];
-
-   showSources(uniqueSources);
-
-   log("FULL WORKFLOW completed successfully.");
-
- }catch(error){
-   showResult(
-     "FULL WORKFLOW dayandırıldı.\n\nXəta: " +
-     error.message +
-     "\n\nƏvvəlki agentlərin nəticələri yoxlanıla bilər."
-   );
-   log("Workflow error: " + error.message);
- }finally{
-   setBusy(false);
- }
+  const d=await api("/api/workflow",{method:"POST",body:JSON.stringify({task})});
+  const box=document.getElementById("workflowOutput");
+  box.replaceChildren();
+  Object.entries(d.results||{}).forEach(([name,value])=>{
+   const section=document.createElement("div");
+   section.className="history-item";
+   const heading=document.createElement("strong");
+   heading.textContent=name.toUpperCase();
+   const content=document.createElement("p");
+   content.className="result";
+   content.textContent=value;
+   section.append(heading,content);
+   box.appendChild(section);
+  });
+  document.getElementById("workflowResults").classList.remove("hidden");
+  document.getElementById("output").textContent="Workflow completed. See all six agent results below.";
+  renderSources(d.sharedResearch?.results||[]);
+  document.getElementById("executionStatus").textContent="Workflow completed.";
+ }catch(e){
+  document.getElementById("output").textContent="Workflow error: "+e.message;
+  document.getElementById("executionStatus").textContent="Workflow failed or timed out.";
+ }finally{setBusy(false);}
 }
 
-renderAgents();
-checkBackend();
+async function loadHistory(){
+ const box=document.getElementById("historyList");
+ box.textContent="Loading history...";
+ try{
+  const d=await api("/api/history");
+  box.replaceChildren();
+  if(!d.history?.length){box.textContent="No saved tasks yet.";return;}
+  d.history.forEach(item=>{
+   const div=document.createElement("div");
+   div.className="history-item";
+   const title=document.createElement("strong");
+   title.textContent=(item.agent||"Agent").toUpperCase()+" — "+(item.status||"");
+   const task=document.createElement("p");
+   task.textContent=item.task||"";
+   const date=document.createElement("small");
+   date.textContent=item.created_at||"";
+   div.append(title,task,date);
+   box.appendChild(div);
+  });
+ }catch(e){box.textContent="History unavailable: "+e.message;}
+}
+
+function saveApi(){
+ const value=document.getElementById("apiInput").value.trim().replace(/\/+$/,"");
+ if(!value.startsWith("https://")){alert("Please enter a valid HTTPS backend URL.");return;}
+ API=value;
+ localStorage.setItem("agagent_api",API);
+ alert("Backend address saved.");
+ checkHealth();
+}
+
+checkHealth();
 </script>
-
 </body>
 </html>
+
